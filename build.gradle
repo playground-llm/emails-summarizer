@@ -1,0 +1,12 @@
+allprojects {
+    group = 'com.emails-summarizer'
+    version = '0.1.0'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    // Shared subproject configuration will go here
+}
