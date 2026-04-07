@@ -1,20 +1,36 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  Project: emails-summarizer
+  Domain: Email client application — users browse a list of emails in a sidebar and view full details in a detail panel.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+  Build system: Gradle 8.13 monorepo (always use ./gradlew, never bare gradle).
+  Group: com.emails-summarizer | Version: 0.1.0
+  Subprojects:
+    - ui  — Frontend. Tech stack: Vue 3 (CDN, no bundler yet). Entry point: ui/index.html.
+            Two-panel layout: category list sidebar (left, from api-rs GET /categories) + message list panel (right, from api-rs GET /messages?categoryCode=).
+            Authentication: OAuth2 Authorization Code flow via GitHub; token stored in sessionStorage.
+            Page must be served over HTTP (not file://); OAuth2 redirect requires a registered redirect_uri.
+    - api-rs — Backend API. Tech stack: Java, Spring Boot 4+, REST microservices.
+            OAuth2: GitHub OAuth App ("emails-summarizer") as identity provider; Authorization Code flow only.
+            api-rs is an OAuth2 Resource Server; validates GitHub opaque tokens via https://api.github.com/user.
+            GitHub client ID/secret injected via env vars GITHUB_CLIENT_ID / GITHUB_CLIENT_SECRET.
+
+  Repository: git@github.com:playground-llm/emails-summarizer.git
+
+rules:
+  proposal:
+    - Keep proposals concise (1-2 pages maximum).
+    - Always include a "Non-Goals" section so scope is explicit.
+    - List every new capability with a kebab-case identifier — these map 1-to-1 to spec files.
+  design:
+    - Focus on architectural decisions and rationale (why X over Y), not line-by-line implementation.
+    - Call out CDN vs. bundler trade-offs explicitly for any frontend work until a build pipeline is established.
+  specs:
+    - Use SHALL/MUST for normative requirements; avoid "should" or "may".
+    - Every requirement MUST have at least one testable scenario in Given/When/Then format.
+    - Scenarios MUST use exactly 4 hashtags (####).
+  tasks:
+    - Tasks should be completable in a single session (~1-2 hours each).
+    - Order tasks by dependency (setup before implementation, implementation before verification).
+    - The last task group should always be a "Verification" section with browser/manual checks.
