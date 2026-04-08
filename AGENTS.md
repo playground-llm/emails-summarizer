@@ -49,6 +49,14 @@ emails-summarizer/
     └── skills/           # Copilot skill files (SKILL.md)
 ```
 
+## Code Layout Skills
+
+Before writing any code, read and follow:
+
+- `.agents/skills/ui-code-layout/SKILL.md` for frontend changes
+- `.agents/skills/api-rs-code-layout/SKILL.md` for backend changes
+
+
 ## Build system
 
 - **Tool**: Gradle 8.13 (via wrapper — always use `./gradlew`, never a system `gradle`)
