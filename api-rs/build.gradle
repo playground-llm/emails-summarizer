@@ -1,0 +1,36 @@
+// Backend (api-rs) — Spring Boot 4+ REST microservice
+// Tech stack: Java, Spring Boot 4+, Spring Data JPA, Spring Security, OAuth2 Resource Server
+// Authentication: GitHub OAuth2 (opaque token introspection via https://api.github.com/user)
+// Storage: H2 in-memory (dev only)
+
+plugins {
+    id 'org.springframework.boot' version '4.0.5'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+
+    runtimeOnly 'com.h2database:h2'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+test {
+    useJUnitPlatform()
+}

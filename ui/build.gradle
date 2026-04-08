@@ -1,0 +1,6 @@
+// ui subproject — Frontend
+// Tech stack: Vue 3 (served via CDN, no bundler). Entry point: ui/index.html.
+// Serve with any static HTTP server, e.g.:
+//   npx serve ui        (port 3000)
+//   python3 -m http.server 5500 (from inside ui/)
+// When a Gradle-integrated frontend build is added, configure it here.
