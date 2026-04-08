@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OAuthController — emails-summarizer Javadoc</title>
+  <link rel="stylesheet" href="../../../../stylesheet.css"/>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="../../../../index.html">emails&#8209;<span>summarizer</span></a>
+  <span class="badge">api-rs · v0.1.0</span>
+  <nav class="breadcrumb">
+    <a href="../../../../index.html">All Packages</a> /
+    com.emailssummarizer.apirs.oauth /
+    OAuthController
+  </nav>
+</header>
+
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Root</div>
+    <a href="../ApiRsApplication.html">ApiRsApplication <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">category</div>
+    <a href="../category/Category.html">Category <span class="kind">E</span></a>
+    <a href="../category/CategoryController.html">CategoryController <span class="kind">C</span></a>
+    <a href="../category/CategoryRepository.html">CategoryRepository <span class="kind">I</span></a>
+    <a href="../category/CategoryRequest.html">CategoryRequest <span class="kind">R</span></a>
+    <a href="../category/CategoryService.html">CategoryService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">message</div>
+    <a href="../message/Message.html">Message <span class="kind">E</span></a>
+    <a href="../message/MessageController.html">MessageController <span class="kind">C</span></a>
+    <a href="../message/MessageRepository.html">MessageRepository <span class="kind">I</span></a>
+    <a href="../message/MessageRequest.html">MessageRequest <span class="kind">R</span></a>
+    <a href="../message/MessageService.html">MessageService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">oauth</div>
+    <a href="OAuthController.html" class="active">OAuthController <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">security</div>
+    <a href="../security/GitHubOpaqueTokenIntrospector.html">GitHubOpaqueTokenIntrospector <span class="kind">C</span></a>
+    <a href="../security/ResourceServerConfig.html">ResourceServerConfig <span class="kind">C</span></a>
+  </div>
+</nav>
+
+<main>
+  <div class="class-header">
+    <div class="package-name">com.emailssummarizer.apirs.oauth</div>
+    <h1>OAuthController <span class="class-kind-badge">class</span></h1>
+    <div class="annotations">
+      <span class="ann-badge">@RestController</span>
+      <span class="ann-badge">@RequestMapping("/oauth2")</span>
+    </div>
+    <div class="class-signature">
+      <span class="kw">public class</span> <span class="cn">OAuthController</span>
+    </div>
+    <div class="class-desc">
+      <p>Proxies the GitHub OAuth2 Authorization Code → access_token exchange.</p>
+      <p>GitHub's token endpoint does not emit CORS headers, so a browser cannot call it
+      directly. The UI sends the authorization code to <code>POST /oauth2/token</code> on this
+      controller, which performs the server-to-server exchange and returns only the
+      <code>access_token</code> to the browser — keeping the <code>client_secret</code> on the
+      server at all times.</p>
+      <p>This endpoint is permitted without authentication (no Bearer token required)
+      so that the UI can obtain a token before it has one.</p>
+      <p>Request / response contract:</p>
+      <pre style="font-family:var(--font-mono,monospace);font-size:0.8rem;background:#f1f3f5;border:1px solid #dee2e6;border-radius:4px;padding:0.6rem 0.9rem;margin:0.5rem 0;overflow-x:auto;">POST /oauth2/token  Content-Type: application/json
+{ "code": "...", "redirectUri": "..." }
+
+200 OK  Content-Type: application/json
+{ "accessToken": "gho_..." }</pre>
+    </div>
+  </div>
+
+  <h2 class="section-title">Nested Type Summary</h2>
+
+  <!-- TokenRequest -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">TokenRequest</span>
+      <span class="member-return-type">record</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public record</span> <span class="typ">TokenRequest</span>(<span class="typ">String</span> code, <span class="typ">String</span> redirectUri)
+      </div>
+      <div class="member-summary">Immutable DTO representing the JSON body sent by the UI to request a token exchange.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>code</strong> — the GitHub authorization code received by the UI after the OAuth2
+          redirect; must not be <code>null</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>redirectUri</strong> — the redirect URI used during the authorization request; must match
+          the value registered with the GitHub OAuth App exactly</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- TokenResponse -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">TokenResponse</span>
+      <span class="member-return-type">record</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public record</span> <span class="typ">TokenResponse</span>(<span class="typ">String</span> accessToken)
+      </div>
+      <div class="member-summary">Immutable DTO representing the JSON response returned to the UI after a successful token exchange.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>accessToken</strong> — the GitHub access token that the UI should store and send as
+          a <code>Authorization: Bearer</code> header on subsequent API calls</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <h2 class="section-title">Method Summary</h2>
+
+  <!-- exchangeToken -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="ann-badge" style="font-size:0.65rem;">@PostMapping("/token")</span>
+      <span class="member-name">exchangeToken</span>
+      <span class="member-return-type">TokenResponse</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="ann">@PostMapping(value = "/token", consumes = APPLICATION_JSON, produces = APPLICATION_JSON)</span><br/>
+        <span class="kw">public</span> <span class="typ">TokenResponse</span> exchangeToken(<span class="ann">@RequestBody</span> <span class="typ">TokenRequest</span> request)
+      </div>
+      <div class="member-summary">Handles <code>POST /oauth2/token</code> requests to exchange a GitHub authorization code for an access token.</div>
+      <div class="member-detail">Calls <code>https://github.com/login/oauth/access_token</code> server-side with the configured
+      <code>client_id</code> and <code>client_secret</code>, then extracts and returns the
+      <code>access_token</code> from GitHub's response. The <code>client_secret</code> is never
+      exposed to the browser.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>request</strong> — the request body containing the authorization <code>code</code> and
+          the <code>redirectUri</code>; must not be <code>null</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>a <code>TokenResponse</code> containing the GitHub access token</td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-throws">@throws</span></td>
+          <td><strong>RuntimeException</strong> if GitHub does not return an <code>access_token</code>
+          (e.g. the code is invalid, expired, or already used)</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>emails-summarizer api-rs · v0.1.0</span>
+  <span>Generated Javadoc</span>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CategoryController — emails-summarizer Javadoc</title>
+  <link rel="stylesheet" href="../../../../stylesheet.css"/>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="../../../../index.html">emails&#8209;<span>summarizer</span></a>
+  <span class="badge">api-rs · v0.1.0</span>
+  <nav class="breadcrumb">
+    <a href="../../../../index.html">All Packages</a> /
+    com.emailssummarizer.apirs.category /
+    CategoryController
+  </nav>
+</header>
+
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Root</div>
+    <a href="../ApiRsApplication.html">ApiRsApplication <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">category</div>
+    <a href="Category.html">Category <span class="kind">E</span></a>
+    <a href="CategoryController.html" class="active">CategoryController <span class="kind">C</span></a>
+    <a href="CategoryRepository.html">CategoryRepository <span class="kind">I</span></a>
+    <a href="CategoryRequest.html">CategoryRequest <span class="kind">R</span></a>
+    <a href="CategoryService.html">CategoryService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">message</div>
+    <a href="../message/Message.html">Message <span class="kind">E</span></a>
+    <a href="../message/MessageController.html">MessageController <span class="kind">C</span></a>
+    <a href="../message/MessageRepository.html">MessageRepository <span class="kind">I</span></a>
+    <a href="../message/MessageRequest.html">MessageRequest <span class="kind">R</span></a>
+    <a href="../message/MessageService.html">MessageService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">oauth</div>
+    <a href="../oauth/OAuthController.html">OAuthController <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">security</div>
+    <a href="../security/GitHubOpaqueTokenIntrospector.html">GitHubOpaqueTokenIntrospector <span class="kind">C</span></a>
+    <a href="../security/ResourceServerConfig.html">ResourceServerConfig <span class="kind">C</span></a>
+  </div>
+</nav>
+
+<main>
+  <div class="class-header">
+    <div class="package-name">com.emailssummarizer.apirs.category</div>
+    <h1>CategoryController <span class="class-kind-badge">class</span></h1>
+    <div class="annotations">
+      <span class="ann-badge">@RestController</span>
+      <span class="ann-badge">@RequestMapping("/categories")</span>
+    </div>
+    <div class="class-signature">
+      <span class="kw">public class</span> <span class="cn">CategoryController</span>
+    </div>
+    <div class="class-desc">
+      <p>REST controller that exposes the category management API under <code>/categories</code>.</p>
+      <p>Handles HTTP request/response mapping only; all business logic is delegated to
+      <a href="CategoryService.html">CategoryService</a>. This class must not interact with any repository directly.</p>
+      <p>Requires the following roles depending on the HTTP method:</p>
+      <ul style="margin: 0.5rem 0 0 1.25rem; font-size: 0.9rem;">
+        <li><code>ROLE_READ</code> — <code>GET /categories</code></li>
+        <li><code>ROLE_EDIT</code> — <code>POST /categories</code>, <code>PUT /categories/{code}</code></li>
+        <li><code>ROLE_DEL</code> — <code>DELETE /categories/{code}</code></li>
+      </ul>
+    </div>
+    <div class="see-also">
+      See also: <a href="CategoryService.html">CategoryService</a>
+    </div>
+  </div>
+
+  <h2 class="section-title">Constructor Summary</h2>
+
+  <div class="member-card constructor">
+    <div class="member-card-header">
+      <span class="member-name">CategoryController</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> CategoryController(<span class="typ">CategoryService</span> categoryService)
+      </div>
+      <div class="member-summary">Constructs a <code>CategoryController</code> with its required service dependency.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>categoryService</strong> — the service handling category business logic; must not be <code>null</code></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <h2 class="section-title">Method Summary</h2>
+
+  <!-- listCategories -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="ann-badge" style="font-size:0.65rem;">@GetMapping</span>
+      <span class="member-name">listCategories</span>
+      <span class="member-return-type">List&lt;Category&gt;</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="ann">@GetMapping</span><br/>
+        <span class="kw">public</span> <span class="typ">List</span>&lt;<span class="typ">Category</span>&gt; listCategories()
+      </div>
+      <div class="member-summary">Handles <code>GET /categories</code> requests to retrieve all categories.</div>
+      <div class="member-detail">Delegates to <a href="CategoryService.html">CategoryService#listAll()</a> and returns the full list
+      of persisted categories in insertion order. Requires <code>ROLE_READ</code>.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>a list of all <a href="Category.html">Category</a> entities; never <code>null</code>, may be empty</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- createCategory -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="ann-badge" style="font-size:0.65rem;">@PostMapping</span>
+      <span class="member-name">createCategory</span>
+      <span class="member-return-type">ResponseEntity&lt;Category&gt;</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="ann">@PostMapping</span><br/>
+        <span class="kw">public</span> <span class="typ">ResponseEntity</span>&lt;<span class="typ">Category</span>&gt; createCategory(<span class="ann">@RequestBody</span> <span class="typ">CategoryRequest</span> request)
+      </div>
+      <div class="member-summary">Handles <code>POST /categories</code> requests to create a new category.</div>
+      <div class="member-detail">Delegates to <a href="CategoryService.html">CategoryService#create(CategoryRequest)</a> and returns
+      the created resource with HTTP 201 Created. Requires <code>ROLE_EDIT</code>.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>request</strong> — the request body containing <code>name</code>, <code>code</code>, and optional
+          <code>description</code>; validated by the service layer</td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>a <code>ResponseEntity</code> with status 201 and the persisted
+          <a href="Category.html">Category</a> as the body; or 409 if the code already exists</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- updateCategory -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="ann-badge" style="font-size:0.65rem;">@PutMapping("/{code}")</span>
+      <span class="member-name">updateCategory</span>
+      <span class="member-return-type">Category</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="ann">@PutMapping("/{code}")</span><br/>
+        <span class="kw">public</span> <span class="typ">Category</span> updateCategory(<span class="ann">@PathVariable</span> <span class="typ">String</span> code,
+                               <span class="ann">@RequestBody</span> <span class="typ">CategoryRequest</span> request)
+      </div>
+      <div class="member-summary">Handles <code>PUT /categories/{code}</code> requests to update an existing category.</div>
+      <div class="member-detail">Delegates to <a href="CategoryService.html">CategoryService#update(String, CategoryRequest)</a>. Only
+      <code>name</code> and <code>description</code> are updated; the <code>code</code> path variable
+      is used as a lookup key and remains immutable. Requires <code>ROLE_EDIT</code>.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>code</strong> — the unique business key of the category to update</td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>request</strong> — the request body with the new <code>name</code> and optional <code>description</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>the updated <a href="Category.html">Category</a>; or 404 if no category with <code>code</code> exists</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- deleteCategory -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="ann-badge" style="font-size:0.65rem;">@DeleteMapping("/{code}")</span>
+      <span class="member-name">deleteCategory</span>
+      <span class="member-return-type">void</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="ann">@DeleteMapping("/{code}")</span><br/>
+        <span class="ann">@ResponseStatus(HttpStatus.NO_CONTENT)</span><br/>
+        <span class="kw">public void</span> deleteCategory(<span class="ann">@PathVariable</span> <span class="typ">String</span> code)
+      </div>
+      <div class="member-summary">Handles <code>DELETE /categories/{code}</code> requests to remove a category.</div>
+      <div class="member-detail">Delegates to <a href="CategoryService.html">CategoryService#delete(String)</a> and responds with
+      HTTP 204 No Content on success. Requires <code>ROLE_DEL</code>.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>code</strong> — the unique business key of the category to delete; returns 404 if not found,
+          409 if the category still has associated messages</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>emails-summarizer api-rs · v0.1.0</span>
+  <span>Generated Javadoc</span>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MessageController — emails-summarizer Javadoc</title>
+  <link rel="stylesheet" href="../../../../stylesheet.css"/>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="../../../../index.html">emails&#8209;<span>summarizer</span></a>
+  <span class="badge">api-rs · v0.1.0</span>
+  <nav class="breadcrumb">
+    <a href="../../../../index.html">All Packages</a> /
+    com.emailssummarizer.apirs.message /
+    MessageController
+  </nav>
+</header>
+
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Root</div>
+    <a href="../ApiRsApplication.html">ApiRsApplication <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">category</div>
+    <a href="../category/Category.html">Category <span class="kind">E</span></a>
+    <a href="../category/CategoryController.html">CategoryController <span class="kind">C</span></a>
+    <a href="../category/CategoryRepository.html">CategoryRepository <span class="kind">I</span></a>
+    <a href="../category/CategoryRequest.html">CategoryRequest <span class="kind">R</span></a>
+    <a href="../category/CategoryService.html">CategoryService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">message</div>
+    <a href="Message.html">Message <span class="kind">E</span></a>
+    <a href="MessageController.html" class="active">MessageController <span class="kind">C</span></a>
+    <a href="MessageRepository.html">MessageRepository <span class="kind">I</span></a>
+    <a href="MessageRequest.html">MessageRequest <span class="kind">R</span></a>
+    <a href="MessageService.html">MessageService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">oauth</div>
+    <a href="../oauth/OAuthController.html">OAuthController <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">security</div>
+    <a href="../security/GitHubOpaqueTokenIntrospector.html">GitHubOpaqueTokenIntrospector <span class="kind">C</span></a>
+    <a href="../security/ResourceServerConfig.html">ResourceServerConfig <span class="kind">C</span></a>
+  </div>
+</nav>
+
+<main>
+  <div class="class-header">
+    <div class="package-name">com.emailssummarizer.apirs.message</div>
+    <h1>MessageController <span class="class-kind-badge">class</span></h1>
+    <div class="annotations">
+      <span class="ann-badge">@RestController</span>
+      <span class="ann-badge">@RequestMapping("/messages")</span>
+    </div>
+    <div class="class-signature">
+      <span class="kw">public class</span> <span class="cn">MessageController</span>
+    </div>
+    <div class="class-desc">
+      <p>REST controller that exposes the message management API under <code>/messages</code>.</p>
+      <p>Handles HTTP request/response mapping only; all business logic is delegated to
+      <a href="MessageService.html">MessageService</a>. This class must not interact with any repository directly.</p>
+      <p>Requires the following roles depending on the HTTP method:</p>
+      <ul style="margin: 0.5rem 0 0 1.25rem; font-size: 0.9rem;">
+        <li><code>ROLE_READ</code> — <code>GET /messages</code></li>
+        <li><code>ROLE_EDIT</code> — <code>POST /messages</code>, <code>PUT /messages/{id}</code></li>
+        <li><code>ROLE_DEL</code> — <code>DELETE /messages/{id}</code></li>
+      </ul>
+    </div>
+    <div class="see-also">
+      See also: <a href="MessageService.html">MessageService</a>
+    </div>
+  </div>
+
+  <h2 class="section-title">Constructor Summary</h2>
+
+  <div class="member-card constructor">
+    <div class="member-card-header">
+      <span class="member-name">MessageController</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> MessageController(<span class="typ">MessageService</span> messageService)
+      </div>
+      <div class="member-summary">Constructs a <code>MessageController</code> with its required service dependency.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>messageService</strong> — the service handling message business logic; must not be <code>null</code></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <h2 class="section-title">Method Summary</h2>
+
+  <!-- listMessages -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="ann-badge" style="font-size:0.65rem;">@GetMapping</span>
+      <span class="member-name">listMessages</span>
+      <span class="member-return-type">List&lt;Message&gt;</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="ann">@GetMapping</span><br/>
+        <span class="kw">public</span> <span class="typ">List</span>&lt;<span class="typ">Message</span>&gt; listMessages(<span class="ann">@RequestParam</span> <span class="typ">String</span> categoryCode)
+      </div>
+      <div class="member-summary">Handles <code>GET /messages?categoryCode={code}</code> requests to list messages belonging to a specific category.</div>
+      <div class="member-detail">Delegates to <a href="MessageService.html">MessageService#listByCategoryCode(String)</a>.
+      Requires <code>ROLE_READ</code>. Returns an empty list if the category has no messages;
+      returns 400 if the <code>categoryCode</code> query parameter is absent.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>categoryCode</strong> — the code of the category whose messages to retrieve; must not be <code>null</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>a list of <a href="Message.html">Message</a> entities belonging to the specified category; never <code>null</code>, may be empty</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- createMessage -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="ann-badge" style="font-size:0.65rem;">@PostMapping</span>
+      <span class="member-name">createMessage</span>
+      <span class="member-return-type">ResponseEntity&lt;Message&gt;</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="ann">@PostMapping</span><br/>
+        <span class="kw">public</span> <span class="typ">ResponseEntity</span>&lt;<span class="typ">Message</span>&gt; createMessage(<span class="ann">@RequestBody</span> <span class="typ">MessageRequest</span> request)
+      </div>
+      <div class="member-summary">Handles <code>POST /messages</code> requests to create a new message.</div>
+      <div class="member-detail">Delegates to <a href="MessageService.html">MessageService#create(MessageRequest)</a> and returns the
+      created resource with HTTP 201 Created. Requires <code>ROLE_EDIT</code>.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>request</strong> — the request body containing <code>title</code>, <code>body</code>, and
+          <code>categoryCode</code>; validated by the service layer</td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>a <code>ResponseEntity</code> with status 201 and the persisted
+          <a href="Message.html">Message</a> as the body; or 409 if the <code>categoryCode</code>
+          does not reference an existing category</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- updateMessage -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="ann-badge" style="font-size:0.65rem;">@PutMapping("/{id}")</span>
+      <span class="member-name">updateMessage</span>
+      <span class="member-return-type">Message</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="ann">@PutMapping("/{id}")</span><br/>
+        <span class="kw">public</span> <span class="typ">Message</span> updateMessage(<span class="ann">@PathVariable</span> <span class="typ">UUID</span> id,
+                              <span class="ann">@RequestBody</span> <span class="typ">MessageRequest</span> request)
+      </div>
+      <div class="member-summary">Handles <code>PUT /messages/{id}</code> requests to update an existing message.</div>
+      <div class="member-detail">Delegates to <a href="MessageService.html">MessageService#update(UUID, MessageRequest)</a>.
+      Requires <code>ROLE_EDIT</code>.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>id</strong> — the UUID of the message to update</td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>request</strong> — the request body with the new <code>title</code> and <code>body</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>the updated <a href="Message.html">Message</a>; or 404 if no message with <code>id</code> exists</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- deleteMessage -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="ann-badge" style="font-size:0.65rem;">@DeleteMapping("/{id}")</span>
+      <span class="member-name">deleteMessage</span>
+      <span class="member-return-type">void</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="ann">@DeleteMapping("/{id}")</span><br/>
+        <span class="ann">@ResponseStatus(HttpStatus.NO_CONTENT)</span><br/>
+        <span class="kw">public void</span> deleteMessage(<span class="ann">@PathVariable</span> <span class="typ">UUID</span> id)
+      </div>
+      <div class="member-summary">Handles <code>DELETE /messages/{id}</code> requests to remove a message.</div>
+      <div class="member-detail">Delegates to <a href="MessageService.html">MessageService#delete(UUID)</a> and responds with
+      HTTP 204 No Content on success. Requires <code>ROLE_DEL</code>.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>id</strong> — the UUID of the message to delete; returns 404 if no such message exists</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>emails-summarizer api-rs · v0.1.0</span>
+  <span>Generated Javadoc</span>
+</footer>
+
+</body>
+</html>
