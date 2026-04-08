@@ -10,3 +10,18 @@ allprojects {
 subprojects {
     // Shared subproject configuration will go here
 }
+
+// Convenience task: start the Spring Boot API (delegates to :api-rs:bootRun)
+tasks.register('runApi') {
+    group = 'application'
+    description = 'Start the api-rs Spring Boot server on port 8080.'
+    dependsOn ':api-rs:bootRun'
+}
+
+// Convenience task: serve the Vue 3 UI with Python's built-in HTTP server on port 5500
+tasks.register('runUi', Exec) {
+    group = 'application'
+    description = 'Serve the ui directory over HTTP on port 5500 (requires Python 3).'
+    workingDir 'ui'
+    commandLine 'python3', '-m', 'http.server', '5500'
+}
