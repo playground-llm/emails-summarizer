@@ -280,10 +280,10 @@
   // Public GitHub OAuth App client_id — safe to embed in HTML.
   // Override by setting window.__GITHUB_CLIENT_ID__ before this script, or
   // replace the placeholder with your real value.
-  const GITHUB_CLIENT_ID = window.__GITHUB_CLIENT_ID__ || 'YOUR_GITHUB_CLIENT_ID';
+  const GITHUB_CLIENT_ID = window.__GITHUB_CLIENT_ID__ || 'Ov23lidSXJDYQSwOXa5m';
 
   // api-rs base URL
-  const API_BASE = 'http://localhost:8080';
+  const API_BASE = 'http://local.example.com:8080';
 
   // Must match exactly the callback URL registered in your GitHub OAuth App.
   const REDIRECT_URI = window.location.origin + window.location.pathname;
@@ -297,7 +297,7 @@
 
   // ── Build GitHub authorization URL ────────────────────────────────────────
   function buildGitHubAuthUrl() {
-    const state = crypto.randomUUID();
+    const state = '02051882-5922-4e82-adb1-823a3240a9bd'; //crypto.randomUUID();
     sessionStorage.setItem('oauth_state', state);
     const params = new URLSearchParams({
       client_id:    GITHUB_CLIENT_ID,

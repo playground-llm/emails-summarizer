@@ -46,11 +46,18 @@ public class GitHubOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
             throw new BadOpaqueTokenException("GitHub token introspection returned no user info");
         }
 
+        System.out.println("\n\n\n\n\n\nUserInfo: " + userInfo + "\n\n\n\n\n\n");
+
         String login = (String) userInfo.get("login");
+        Object id = userInfo.getOrDefault("id", 0);
+        Object name = userInfo.getOrDefault("name", login);
+        if (name == null) {
+            name = login;
+        }
         Map<String, Object> attributes = Map.of(
                 "login", login,
-                "id", userInfo.getOrDefault("id", 0),
-                "name", userInfo.getOrDefault("name", login)
+                "id", id,
+                "name", name
         );
 
         return new GitHubPrincipal(login, attributes);
