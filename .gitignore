@@ -5,3 +5,6 @@ build/
 
 # Wrapper jar is intentionally tracked, exclude other generated files
 !gradle/wrapper/gradle-wrapper.jar
+
+# Local environment secrets
+local/
