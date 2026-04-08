@@ -1,7 +1,6 @@
 package com.emailssummarizer.apirs.security;
 
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.server.resource.introspection.BadOpaqueTokenException;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.stereotype.Component;
@@ -30,14 +29,15 @@ public class GitHubOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
     @Override
     public OAuth2AuthenticatedPrincipal introspect(String token) {
-        @SuppressWarnings("unchecked")
         Map<String, Object> userInfo;
         try {
-            userInfo = restClient.get()
+            @SuppressWarnings("unchecked")
+            Map<String, Object> response = restClient.get()
                     .header("Authorization", "Bearer " + token)
                     .header("Accept", "application/vnd.github+json")
                     .retrieve()
                     .body(Map.class);
+            userInfo = response;
         } catch (Exception ex) {
             throw new BadOpaqueTokenException("Invalid GitHub token: " + ex.getMessage(), ex);
         }
@@ -45,8 +45,6 @@ public class GitHubOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         if (userInfo == null || !userInfo.containsKey("login")) {
             throw new BadOpaqueTokenException("GitHub token introspection returned no user info");
         }
-
-        System.out.println("\n\n\n\n\n\nUserInfo: " + userInfo + "\n\n\n\n\n\n");
 
         String login = (String) userInfo.get("login");
         Object id = userInfo.getOrDefault("id", 0);

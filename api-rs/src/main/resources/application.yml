@@ -18,6 +18,7 @@ spring:
     init:
       mode: always
 
+  # spring.h2.console is valid in Spring Boot 3+/4 — IDE extension false positive
   h2:
     console:
       enabled: true
