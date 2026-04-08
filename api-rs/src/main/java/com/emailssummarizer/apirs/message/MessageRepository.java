@@ -10,4 +10,6 @@ import java.util.UUID;
 public interface MessageRepository extends JpaRepository<Message, UUID> {
 
     List<Message> findByCategoryCode(String categoryCode);
+
+    boolean existsByCategoryCode(String categoryCode);
 }

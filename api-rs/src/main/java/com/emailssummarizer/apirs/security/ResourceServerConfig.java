@@ -1,5 +1,6 @@
 package com.emailssummarizer.apirs.security;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,11 +30,17 @@ public class ResourceServerConfig {
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
-                // Allow H2 console without authentication (dev only)
+                // Public paths — no token required
                 .requestMatchers("/h2-console/**").permitAll()
-                // Allow GitHub OAuth2 token exchange — must be public (no token yet)
                 .requestMatchers("/oauth2/token").permitAll()
-                // All other endpoints require a valid GitHub token
+                // DELETE requires ROLE_DEL
+                .requestMatchers(HttpMethod.DELETE, "/categories/**", "/messages/**").hasRole("DEL")
+                // POST and PUT require ROLE_EDIT
+                .requestMatchers(HttpMethod.POST,   "/categories",    "/messages").hasRole("EDIT")
+                .requestMatchers(HttpMethod.PUT,     "/categories/**", "/messages/**").hasRole("EDIT")
+                // GET requires ROLE_READ
+                .requestMatchers(HttpMethod.GET,     "/categories",    "/messages").hasRole("READ")
+                // Everything else (e.g. future endpoints) still requires authentication
                 .anyRequest().authenticated()
             )
             // Configure as OAuth2 Resource Server with opaque token introspection
@@ -57,7 +64,7 @@ public class ResourceServerConfig {
             "http://127.0.0.1:8000",
             "http://local.example.com:5500"
         ));
-        config.setAllowedMethods(List.of("GET", "POST", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setAllowCredentials(false);
 

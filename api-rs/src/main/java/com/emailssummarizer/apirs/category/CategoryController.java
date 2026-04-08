@@ -1,8 +1,8 @@
 package com.emailssummarizer.apirs.category;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -10,14 +10,31 @@ import java.util.List;
 @RequestMapping("/categories")
 public class CategoryController {
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
-    public CategoryController(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
     @GetMapping
     public List<Category> listCategories() {
-        return categoryRepository.findAll();
+        return categoryService.listAll();
+    }
+
+    @PostMapping
+    public ResponseEntity<Category> createCategory(@RequestBody CategoryRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.create(request));
+    }
+
+    @PutMapping("/{code}")
+    public Category updateCategory(@PathVariable String code,
+                                   @RequestBody CategoryRequest request) {
+        return categoryService.update(code, request);
+    }
+
+    @DeleteMapping("/{code}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCategory(@PathVariable String code) {
+        categoryService.delete(code);
     }
 }
