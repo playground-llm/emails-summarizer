@@ -9,9 +9,17 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 /**
- * Business logic for the Category feature slice.
- * Owns all validation, conflict detection, and orchestration.
- * The only class allowed to call {@link CategoryRepository}.
+ * Service responsible for all category business logic.
+ *
+ * <p>Acts as the sole entry point for category mutations and queries within the application.
+ * Validates uniqueness of {@code code} on creation, enforces the immutability of {@code code}
+ * on update, and prevents deletion of categories that still have associated messages.
+ *
+ * <p>Controllers must call this service rather than interacting with
+ * {@link CategoryRepository} directly.
+ *
+ * @see CategoryController
+ * @see CategoryRepository
  */
 @Service
 @Transactional
@@ -20,6 +28,13 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final MessageRepository messageRepository;
 
+    /**
+     * Constructs a {@code CategoryService} with its required repository dependencies.
+     *
+     * @param categoryRepository  the repository for category persistence; must not be {@code null}
+     * @param messageRepository   the repository used to check for message references before
+     *                            deletion; must not be {@code null}
+     */
     public CategoryService(CategoryRepository categoryRepository,
                            MessageRepository messageRepository) {
         this.categoryRepository = categoryRepository;
@@ -28,6 +43,10 @@ public class CategoryService {
 
     /**
      * Returns all categories in insertion order.
+     *
+     * <p>This operation is read-only and does not modify any state.
+     *
+     * @return a list of all persisted {@link Category} entities; never {@code null}, may be empty
      */
     @Transactional(readOnly = true)
     public List<Category> listAll() {
@@ -35,9 +54,16 @@ public class CategoryService {
     }
 
     /**
-     * Creates a new category.
+     * Creates a new category from the given request.
      *
-     * @throws ResponseStatusException 409 if the code is already taken.
+     * <p>The {@code code} field of the request must be unique across all categories.
+     * If a category with the same {@code code} already exists, a 409 Conflict is returned.
+     *
+     * @param request  the category data to persist; must not be {@code null};
+     *                 {@code request.code()} must be non-blank and unique
+     * @return         the persisted {@link Category} with its generated {@code id} populated
+     * @throws ResponseStatusException  with status 409 if a category with {@code request.code()}
+     *                                  already exists
      */
     public Category create(CategoryRequest request) {
         if (categoryRepository.existsByCode(request.code())) {
@@ -53,9 +79,15 @@ public class CategoryService {
 
     /**
      * Updates the name and description of an existing category.
-     * The code is immutable and used only as the lookup key.
      *
-     * @throws ResponseStatusException 404 if no category exists with the given code.
+     * <p>The {@code code} is immutable and is used only as the lookup key to identify
+     * the category to update. The {@code code} field of the request body is ignored.
+     *
+     * @param code     the unique business key of the category to update; must not be {@code null}
+     * @param request  the new values for {@code name} and {@code description}; must not be
+     *                 {@code null}
+     * @return         the updated and persisted {@link Category}
+     * @throws ResponseStatusException  with status 404 if no category with {@code code} exists
      */
     public Category update(String code, CategoryRequest request) {
         Category category = categoryRepository.findByCode(code)
@@ -67,10 +99,16 @@ public class CategoryService {
     }
 
     /**
-     * Deletes a category by code.
+     * Deletes the category identified by the given code.
      *
-     * @throws ResponseStatusException 404 if not found.
-     * @throws ResponseStatusException 409 if messages still reference this category.
+     * <p>Deletion is blocked if any {@link com.emailssummarizer.apirs.message.Message} records
+     * still reference this category. The caller must delete all associated messages before
+     * removing the category.
+     *
+     * @param code  the unique business key of the category to delete; must not be {@code null}
+     * @throws ResponseStatusException  with status 404 if no category with {@code code} exists
+     * @throws ResponseStatusException  with status 409 if the category still has associated
+     *                                  messages
      */
     public void delete(String code) {
         if (!categoryRepository.existsByCode(code)) {
