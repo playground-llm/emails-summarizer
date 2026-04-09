@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>emails-summarizer API — Javadoc</title>
+  <link rel="stylesheet" href="stylesheet.css"/>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="index.html">emails&#8209;<span>summarizer</span></a>
+  <span class="badge">api-rs · v0.1.0</span>
+  <nav class="breadcrumb">All Packages</nav>
+</header>
+
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Root</div>
+    <a href="com/emailssummarizer/apirs/ApiRsApplication.html">ApiRsApplication <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">category</div>
+    <a href="com/emailssummarizer/apirs/category/Category.html">Category <span class="kind">E</span></a>
+    <a href="com/emailssummarizer/apirs/category/CategoryController.html">CategoryController <span class="kind">C</span></a>
+    <a href="com/emailssummarizer/apirs/category/CategoryRepository.html">CategoryRepository <span class="kind">I</span></a>
+    <a href="com/emailssummarizer/apirs/category/CategoryRequest.html">CategoryRequest <span class="kind">R</span></a>
+    <a href="com/emailssummarizer/apirs/category/CategoryService.html">CategoryService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">message</div>
+    <a href="com/emailssummarizer/apirs/message/Message.html">Message <span class="kind">E</span></a>
+    <a href="com/emailssummarizer/apirs/message/MessageController.html">MessageController <span class="kind">C</span></a>
+    <a href="com/emailssummarizer/apirs/message/MessageRepository.html">MessageRepository <span class="kind">I</span></a>
+    <a href="com/emailssummarizer/apirs/message/MessageRequest.html">MessageRequest <span class="kind">R</span></a>
+    <a href="com/emailssummarizer/apirs/message/MessageService.html">MessageService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">oauth</div>
+    <a href="com/emailssummarizer/apirs/oauth/OAuthController.html">OAuthController <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">security</div>
+    <a href="com/emailssummarizer/apirs/security/GitHubOpaqueTokenIntrospector.html">GitHubOpaqueTokenIntrospector <span class="kind">C</span></a>
+    <a href="com/emailssummarizer/apirs/security/ResourceServerConfig.html">ResourceServerConfig <span class="kind">C</span></a>
+  </div>
+</nav>
+
+<main>
+  <div class="index-hero">
+    <h1>emails-summarizer <span style="font-weight:400;color:#6c757d;">API Reference</span></h1>
+    <p>Spring Boot 4 resource server — Java 21 · GitHub OAuth2 · H2 in-memory database</p>
+  </div>
+
+  <!-- Root -->
+  <div class="package-group">
+    <div class="package-group-title">com.emailssummarizer.apirs</div>
+    <div class="class-grid">
+      <a class="class-card" href="com/emailssummarizer/apirs/ApiRsApplication.html">
+        <div><span class="cc-kind class">class</span></div>
+        <div class="cc-name">ApiRsApplication</div>
+        <div class="cc-desc">Entry point for the emails-summarizer API resource server.</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- category -->
+  <div class="package-group">
+    <div class="package-group-title">com.emailssummarizer.apirs.category</div>
+    <div class="class-grid">
+      <a class="class-card" href="com/emailssummarizer/apirs/category/Category.html">
+        <div><span class="cc-kind class">class</span></div>
+        <div class="cc-name">Category</div>
+        <div class="cc-desc">JPA entity representing a message category.</div>
+      </a>
+      <a class="class-card" href="com/emailssummarizer/apirs/category/CategoryController.html">
+        <div><span class="cc-kind class">class</span></div>
+        <div class="cc-name">CategoryController</div>
+        <div class="cc-desc">REST controller that exposes the category management API under <code>/categories</code>.</div>
+      </a>
+      <a class="class-card" href="com/emailssummarizer/apirs/category/CategoryRepository.html">
+        <div><span class="cc-kind interface">interface</span></div>
+        <div class="cc-name">CategoryRepository</div>
+        <div class="cc-desc">Spring Data JPA repository for Category entities.</div>
+      </a>
+      <a class="class-card" href="com/emailssummarizer/apirs/category/CategoryRequest.html">
+        <div><span class="cc-kind record">record</span></div>
+        <div class="cc-name">CategoryRequest</div>
+        <div class="cc-desc">Immutable DTO carrying the data required to create or update a Category.</div>
+      </a>
+      <a class="class-card" href="com/emailssummarizer/apirs/category/CategoryService.html">
+        <div><span class="cc-kind class">class</span></div>
+        <div class="cc-name">CategoryService</div>
+        <div class="cc-desc">Service responsible for all category business logic.</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- message -->
+  <div class="package-group">
+    <div class="package-group-title">com.emailssummarizer.apirs.message</div>
+    <div class="class-grid">
+      <a class="class-card" href="com/emailssummarizer/apirs/message/Message.html">
+        <div><span class="cc-kind class">class</span></div>
+        <div class="cc-name">Message</div>
+        <div class="cc-desc">JPA entity representing an individual email message.</div>
+      </a>
+      <a class="class-card" href="com/emailssummarizer/apirs/message/MessageController.html">
+        <div><span class="cc-kind class">class</span></div>
+        <div class="cc-name">MessageController</div>
+        <div class="cc-desc">REST controller that exposes the message management API under <code>/messages</code>.</div>
+      </a>
+      <a class="class-card" href="com/emailssummarizer/apirs/message/MessageRepository.html">
+        <div><span class="cc-kind interface">interface</span></div>
+        <div class="cc-name">MessageRepository</div>
+        <div class="cc-desc">Spring Data JPA repository for Message entities.</div>
+      </a>
+      <a class="class-card" href="com/emailssummarizer/apirs/message/MessageRequest.html">
+        <div><span class="cc-kind record">record</span></div>
+        <div class="cc-name">MessageRequest</div>
+        <div class="cc-desc">Immutable DTO carrying the data required to create or update a Message.</div>
+      </a>
+      <a class="class-card" href="com/emailssummarizer/apirs/message/MessageService.html">
+        <div><span class="cc-kind class">class</span></div>
+        <div class="cc-name">MessageService</div>
+        <div class="cc-desc">Service responsible for all message business logic.</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- oauth -->
+  <div class="package-group">
+    <div class="package-group-title">com.emailssummarizer.apirs.oauth</div>
+    <div class="class-grid">
+      <a class="class-card" href="com/emailssummarizer/apirs/oauth/OAuthController.html">
+        <div><span class="cc-kind class">class</span></div>
+        <div class="cc-name">OAuthController</div>
+        <div class="cc-desc">Proxies the GitHub OAuth2 Authorization Code → access_token exchange.</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- security -->
+  <div class="package-group">
+    <div class="package-group-title">com.emailssummarizer.apirs.security</div>
+    <div class="class-grid">
+      <a class="class-card" href="com/emailssummarizer/apirs/security/GitHubOpaqueTokenIntrospector.html">
+        <div><span class="cc-kind class">class</span></div>
+        <div class="cc-name">GitHubOpaqueTokenIntrospector</div>
+        <div class="cc-desc">Validates GitHub opaque access tokens and assigns Spring Security granted authorities.</div>
+      </a>
+      <a class="class-card" href="com/emailssummarizer/apirs/security/ResourceServerConfig.html">
+        <div><span class="cc-kind class">class</span></div>
+        <div class="cc-name">ResourceServerConfig</div>
+        <div class="cc-desc">Spring Security configuration for the OAuth2 Resource Server.</div>
+      </a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>emails-summarizer api-rs · v0.1.0</span>
+  <span>Generated Javadoc</span>
+</footer>
+
+</body>
+</html>

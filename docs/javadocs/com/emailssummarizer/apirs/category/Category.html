@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Category — emails-summarizer Javadoc</title>
+  <link rel="stylesheet" href="../../../../stylesheet.css"/>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="../../../../index.html">emails&#8209;<span>summarizer</span></a>
+  <span class="badge">api-rs · v0.1.0</span>
+  <nav class="breadcrumb">
+    <a href="../../../../index.html">All Packages</a> /
+    com.emailssummarizer.apirs.category /
+    Category
+  </nav>
+</header>
+
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Root</div>
+    <a href="../ApiRsApplication.html">ApiRsApplication <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">category</div>
+    <a href="Category.html" class="active">Category <span class="kind">E</span></a>
+    <a href="CategoryController.html">CategoryController <span class="kind">C</span></a>
+    <a href="CategoryRepository.html">CategoryRepository <span class="kind">I</span></a>
+    <a href="CategoryRequest.html">CategoryRequest <span class="kind">R</span></a>
+    <a href="CategoryService.html">CategoryService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">message</div>
+    <a href="../message/Message.html">Message <span class="kind">E</span></a>
+    <a href="../message/MessageController.html">MessageController <span class="kind">C</span></a>
+    <a href="../message/MessageRepository.html">MessageRepository <span class="kind">I</span></a>
+    <a href="../message/MessageRequest.html">MessageRequest <span class="kind">R</span></a>
+    <a href="../message/MessageService.html">MessageService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">oauth</div>
+    <a href="../oauth/OAuthController.html">OAuthController <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">security</div>
+    <a href="../security/GitHubOpaqueTokenIntrospector.html">GitHubOpaqueTokenIntrospector <span class="kind">C</span></a>
+    <a href="../security/ResourceServerConfig.html">ResourceServerConfig <span class="kind">C</span></a>
+  </div>
+</nav>
+
+<main>
+  <div class="class-header">
+    <div class="package-name">com.emailssummarizer.apirs.category</div>
+    <h1>Category <span class="class-kind-badge">class</span></h1>
+    <div class="annotations">
+      <span class="ann-badge">@Entity</span>
+      <span class="ann-badge">@Table(name = "CATEGORY")</span>
+    </div>
+    <div class="class-signature">
+      <span class="kw">public class</span> <span class="cn">Category</span>
+    </div>
+    <div class="class-desc">
+      <p>JPA entity representing a message category.</p>
+      <p>Maps to the <code>CATEGORY</code> database table. The <code>code</code> field is a unique
+      business key used as the URL path parameter in REST endpoints and as a foreign key
+      target from <a href="../message/Message.html">Message</a>. Once set,
+      <code>code</code> must not be changed — it is treated as immutable after creation.</p>
+      <p>The <code>id</code> is an auto-generated surrogate key used internally by JPA;
+      external callers should always refer to categories by their <code>code</code>.</p>
+    </div>
+    <div class="see-also">
+      See also:
+      <a href="CategoryService.html">CategoryService</a>,
+      <a href="CategoryRepository.html">CategoryRepository</a>
+    </div>
+  </div>
+
+  <h2 class="section-title">Constructor Summary</h2>
+
+  <div class="member-card constructor">
+    <div class="member-card-header">
+      <span class="member-name">Category</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> Category()
+      </div>
+      <div class="member-summary">Required no-argument constructor for JPA.</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Method Summary</h2>
+
+  <!-- getId -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">getId</span>
+      <span class="member-return-type">Long</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> <span class="typ">Long</span> getId()
+      </div>
+      <div class="member-summary">Returns the surrogate primary key of this category.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>the auto-generated <code>id</code>, or <code>null</code> before the entity is persisted</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- setId -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">setId</span>
+      <span class="member-return-type">void</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public void</span> setId(<span class="typ">Long</span> id)
+      </div>
+      <div class="member-summary">Sets the surrogate primary key of this category.</div>
+      <div class="member-detail">This method exists for JPA and testing purposes; application code should not set the <code>id</code> directly.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>id</strong> — the primary key value to assign</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- getName -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">getName</span>
+      <span class="member-return-type">String</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> <span class="typ">String</span> getName()
+      </div>
+      <div class="member-summary">Returns the display name of this category.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>the human-readable name; never <code>null</code> for a persisted category</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- setName -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">setName</span>
+      <span class="member-return-type">void</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public void</span> setName(<span class="typ">String</span> name)
+      </div>
+      <div class="member-summary">Sets the display name of this category.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>name</strong> — the new display name; must not be <code>null</code></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- getCode -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">getCode</span>
+      <span class="member-return-type">String</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> <span class="typ">String</span> getCode()
+      </div>
+      <div class="member-summary">Returns the unique business key of this category.</div>
+      <div class="member-detail">The code is immutable after creation and is used as the URL path parameter
+      (e.g. <code>/categories/{code}</code>) and as the foreign key value in
+      <a href="../message/Message.html">Message#getCategoryCode()</a>.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>the unique category code; never <code>null</code> for a persisted category</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- setCode -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">setCode</span>
+      <span class="member-return-type">void</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public void</span> setCode(<span class="typ">String</span> code)
+      </div>
+      <div class="member-summary">Sets the unique business key of this category.</div>
+      <div class="member-detail">Must only be called during initial creation. Changing the code of an
+      existing category will break foreign key references from messages.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>code</strong> — the unique business key to assign; must not be <code>null</code> or blank</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- getDescription -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">getDescription</span>
+      <span class="member-return-type">String</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> <span class="typ">String</span> getDescription()
+      </div>
+      <div class="member-summary">Returns the optional human-readable description of this category.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>the description, or <code>null</code> if none was provided</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- setDescription -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">setDescription</span>
+      <span class="member-return-type">void</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public void</span> setDescription(<span class="typ">String</span> description)
+      </div>
+      <div class="member-summary">Sets the optional human-readable description of this category.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>description</strong> — a descriptive text for the category; may be <code>null</code></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>emails-summarizer api-rs · v0.1.0</span>
+  <span>Generated Javadoc</span>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CategoryRepository — emails-summarizer Javadoc</title>
+  <link rel="stylesheet" href="../../../../stylesheet.css"/>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="../../../../index.html">emails&#8209;<span>summarizer</span></a>
+  <span class="badge">api-rs · v0.1.0</span>
+  <nav class="breadcrumb">
+    <a href="../../../../index.html">All Packages</a> /
+    com.emailssummarizer.apirs.category /
+    CategoryRepository
+  </nav>
+</header>
+
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Root</div>
+    <a href="../ApiRsApplication.html">ApiRsApplication <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">category</div>
+    <a href="Category.html">Category <span class="kind">E</span></a>
+    <a href="CategoryController.html">CategoryController <span class="kind">C</span></a>
+    <a href="CategoryRepository.html" class="active">CategoryRepository <span class="kind">I</span></a>
+    <a href="CategoryRequest.html">CategoryRequest <span class="kind">R</span></a>
+    <a href="CategoryService.html">CategoryService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">message</div>
+    <a href="../message/Message.html">Message <span class="kind">E</span></a>
+    <a href="../message/MessageController.html">MessageController <span class="kind">C</span></a>
+    <a href="../message/MessageRepository.html">MessageRepository <span class="kind">I</span></a>
+    <a href="../message/MessageRequest.html">MessageRequest <span class="kind">R</span></a>
+    <a href="../message/MessageService.html">MessageService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">oauth</div>
+    <a href="../oauth/OAuthController.html">OAuthController <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">security</div>
+    <a href="../security/GitHubOpaqueTokenIntrospector.html">GitHubOpaqueTokenIntrospector <span class="kind">C</span></a>
+    <a href="../security/ResourceServerConfig.html">ResourceServerConfig <span class="kind">C</span></a>
+  </div>
+</nav>
+
+<main>
+  <div class="class-header">
+    <div class="package-name">com.emailssummarizer.apirs.category</div>
+    <h1>CategoryRepository <span class="class-kind-badge interface">interface</span></h1>
+    <div class="annotations">
+      <span class="ann-badge">@Repository</span>
+    </div>
+    <div class="class-signature">
+      <span class="kw">public interface</span> <span class="cn">CategoryRepository</span>
+      <span class="ext">extends JpaRepository&lt;Category, Long&gt;</span>
+    </div>
+    <div class="class-desc">
+      <p>Spring Data JPA repository for <a href="Category.html">Category</a> entities.</p>
+      <p>Provides standard CRUD operations inherited from <code>JpaRepository</code> plus
+      custom query methods that operate on the <code>code</code> business key. This repository
+      must only be called from <a href="CategoryService.html">CategoryService</a> — controllers must not interact
+      with it directly.</p>
+    </div>
+    <div class="see-also">
+      See also: <a href="CategoryService.html">CategoryService</a>
+    </div>
+  </div>
+
+  <h2 class="section-title">Method Summary</h2>
+
+  <!-- findByCode -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-name">findByCode</span>
+      <span class="member-return-type">Optional&lt;Category&gt;</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="typ">Optional</span>&lt;<span class="typ">Category</span>&gt; findByCode(<span class="typ">String</span> code)
+      </div>
+      <div class="member-summary">Returns the category with the given business code, if it exists.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>code</strong> — the unique category code to look up; must not be <code>null</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>an <code>Optional</code> containing the matching <a href="Category.html">Category</a>,
+          or an empty <code>Optional</code> if none is found</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- existsByCode -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-name">existsByCode</span>
+      <span class="member-return-type">boolean</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">boolean</span> existsByCode(<span class="typ">String</span> code)
+      </div>
+      <div class="member-summary">Returns <code>true</code> if a category with the given code already exists in the database.</div>
+      <div class="member-detail">Used by the service layer to guard against duplicate-code conflicts before
+      attempting an insert or to verify existence before a delete.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>code</strong> — the unique category code to check; must not be <code>null</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td><code>true</code> if a category with <code>code</code> exists; <code>false</code> otherwise</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- deleteByCode -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-name">deleteByCode</span>
+      <span class="member-return-type">void</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">void</span> deleteByCode(<span class="typ">String</span> code)
+      </div>
+      <div class="member-summary">Deletes the category identified by the given business code.</div>
+      <div class="member-detail">This method performs a no-op if no category with the given code exists.
+      Callers should verify existence and check for associated messages via
+      <code>existsByCode(String)</code> and
+      <a href="../message/MessageRepository.html">MessageRepository#existsByCategoryCode(String)</a>
+      before invoking this method.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>code</strong> — the unique business key of the category to delete; must not be <code>null</code></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>emails-summarizer api-rs · v0.1.0</span>
+  <span>Generated Javadoc</span>
+</footer>
+
+</body>
+</html>

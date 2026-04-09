@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MessageService — emails-summarizer Javadoc</title>
+  <link rel="stylesheet" href="../../../../stylesheet.css"/>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="../../../../index.html">emails&#8209;<span>summarizer</span></a>
+  <span class="badge">api-rs · v0.1.0</span>
+  <nav class="breadcrumb">
+    <a href="../../../../index.html">All Packages</a> /
+    com.emailssummarizer.apirs.message /
+    MessageService
+  </nav>
+</header>
+
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Root</div>
+    <a href="../ApiRsApplication.html">ApiRsApplication <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">category</div>
+    <a href="../category/Category.html">Category <span class="kind">E</span></a>
+    <a href="../category/CategoryController.html">CategoryController <span class="kind">C</span></a>
+    <a href="../category/CategoryRepository.html">CategoryRepository <span class="kind">I</span></a>
+    <a href="../category/CategoryRequest.html">CategoryRequest <span class="kind">R</span></a>
+    <a href="../category/CategoryService.html">CategoryService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">message</div>
+    <a href="Message.html">Message <span class="kind">E</span></a>
+    <a href="MessageController.html">MessageController <span class="kind">C</span></a>
+    <a href="MessageRepository.html">MessageRepository <span class="kind">I</span></a>
+    <a href="MessageRequest.html">MessageRequest <span class="kind">R</span></a>
+    <a href="MessageService.html" class="active">MessageService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">oauth</div>
+    <a href="../oauth/OAuthController.html">OAuthController <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">security</div>
+    <a href="../security/GitHubOpaqueTokenIntrospector.html">GitHubOpaqueTokenIntrospector <span class="kind">C</span></a>
+    <a href="../security/ResourceServerConfig.html">ResourceServerConfig <span class="kind">C</span></a>
+  </div>
+</nav>
+
+<main>
+  <div class="class-header">
+    <div class="package-name">com.emailssummarizer.apirs.message</div>
+    <h1>MessageService <span class="class-kind-badge">class</span></h1>
+    <div class="annotations">
+      <span class="ann-badge">@Service</span>
+      <span class="ann-badge">@Transactional</span>
+    </div>
+    <div class="class-signature">
+      <span class="kw">public class</span> <span class="cn">MessageService</span>
+    </div>
+    <div class="class-desc">
+      <p>Service responsible for all message business logic.</p>
+      <p>Acts as the sole entry point for message mutations and queries within the application.
+      Validates that a referenced category exists before creating a message, and prevents
+      deletion or update of messages that cannot be found.</p>
+      <p>Controllers must call this service rather than interacting with
+      <a href="MessageRepository.html">MessageRepository</a> directly.</p>
+    </div>
+    <div class="see-also">
+      See also:
+      <a href="MessageController.html">MessageController</a>,
+      <a href="MessageRepository.html">MessageRepository</a>
+    </div>
+  </div>
+
+  <h2 class="section-title">Constructor Summary</h2>
+
+  <div class="member-card constructor">
+    <div class="member-card-header">
+      <span class="member-name">MessageService</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> MessageService(<span class="typ">MessageRepository</span> messageRepository,
+                        <span class="typ">CategoryRepository</span> categoryRepository)
+      </div>
+      <div class="member-summary">Constructs a <code>MessageService</code> with its required repository dependencies.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>messageRepository</strong> — the repository for message persistence; must not be <code>null</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>categoryRepository</strong> — the repository used to verify that a referenced category exists; must not be <code>null</code></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <h2 class="section-title">Method Summary</h2>
+
+  <!-- listByCategoryCode -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="ann-badge" style="font-size:0.65rem;">@Transactional(readOnly=true)</span>
+      <span class="member-name">listByCategoryCode</span>
+      <span class="member-return-type">List&lt;Message&gt;</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="ann">@Transactional(readOnly = true)</span><br/>
+        <span class="kw">public</span> <span class="typ">List</span>&lt;<span class="typ">Message</span>&gt; listByCategoryCode(<span class="typ">String</span> categoryCode)
+      </div>
+      <div class="member-summary">Returns all messages belonging to the given category code.</div>
+      <div class="member-detail">This operation is read-only and does not modify any state. Returns an empty
+      list if the category exists but has no messages, or if the category code is unknown.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>categoryCode</strong> — the code of the category to filter messages by; must not be <code>null</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>a list of <a href="Message.html">Message</a> entities for the given category; never <code>null</code>, may be empty</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- create -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">create</span>
+      <span class="member-return-type">Message</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> <span class="typ">Message</span> create(<span class="typ">MessageRequest</span> request)
+      </div>
+      <div class="member-summary">Creates a new message from the given request.</div>
+      <div class="member-detail">The <code>categoryCode</code> in the request must reference an existing
+      <a href="../category/Category.html">Category</a>. If it does not, a 409 Conflict is returned.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>request</strong> — the message data to persist; must not be <code>null</code>;
+          <code>request.categoryCode()</code> must reference an existing category</td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>the persisted <a href="Message.html">Message</a> with its generated <code>UUID</code> populated</td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-throws">@throws</span></td>
+          <td><strong>ResponseStatusException</strong> with status 409 if <code>request.categoryCode()</code>
+          does not match any existing category</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- update -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">update</span>
+      <span class="member-return-type">Message</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> <span class="typ">Message</span> update(<span class="typ">UUID</span> id, <span class="typ">MessageRequest</span> request)
+      </div>
+      <div class="member-summary">Updates the title and body of an existing message.</div>
+      <div class="member-detail">Only <code>title</code> and <code>body</code> are updated; the <code>categoryCode</code>
+      of an existing message cannot be changed through this method.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>id</strong> — the UUID of the message to update; must not be <code>null</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>request</strong> — the new values for <code>title</code> and <code>body</code>; must not be <code>null</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>the updated and persisted <a href="Message.html">Message</a></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-throws">@throws</span></td>
+          <td><strong>ResponseStatusException</strong> with status 404 if no message with <code>id</code> exists</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- delete -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">delete</span>
+      <span class="member-return-type">void</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public void</span> delete(<span class="typ">UUID</span> id)
+      </div>
+      <div class="member-summary">Deletes the message identified by the given UUID.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>id</strong> — the UUID of the message to delete; must not be <code>null</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-throws">@throws</span></td>
+          <td><strong>ResponseStatusException</strong> with status 404 if no message with <code>id</code> exists</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>emails-summarizer api-rs · v0.1.0</span>
+  <span>Generated Javadoc</span>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MessageRequest — emails-summarizer Javadoc</title>
+  <link rel="stylesheet" href="../../../../stylesheet.css"/>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="../../../../index.html">emails&#8209;<span>summarizer</span></a>
+  <span class="badge">api-rs · v0.1.0</span>
+  <nav class="breadcrumb">
+    <a href="../../../../index.html">All Packages</a> /
+    com.emailssummarizer.apirs.message /
+    MessageRequest
+  </nav>
+</header>
+
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Root</div>
+    <a href="../ApiRsApplication.html">ApiRsApplication <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">category</div>
+    <a href="../category/Category.html">Category <span class="kind">E</span></a>
+    <a href="../category/CategoryController.html">CategoryController <span class="kind">C</span></a>
+    <a href="../category/CategoryRepository.html">CategoryRepository <span class="kind">I</span></a>
+    <a href="../category/CategoryRequest.html">CategoryRequest <span class="kind">R</span></a>
+    <a href="../category/CategoryService.html">CategoryService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">message</div>
+    <a href="Message.html">Message <span class="kind">E</span></a>
+    <a href="MessageController.html">MessageController <span class="kind">C</span></a>
+    <a href="MessageRepository.html">MessageRepository <span class="kind">I</span></a>
+    <a href="MessageRequest.html" class="active">MessageRequest <span class="kind">R</span></a>
+    <a href="MessageService.html">MessageService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">oauth</div>
+    <a href="../oauth/OAuthController.html">OAuthController <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">security</div>
+    <a href="../security/GitHubOpaqueTokenIntrospector.html">GitHubOpaqueTokenIntrospector <span class="kind">C</span></a>
+    <a href="../security/ResourceServerConfig.html">ResourceServerConfig <span class="kind">C</span></a>
+  </div>
+</nav>
+
+<main>
+  <div class="class-header">
+    <div class="package-name">com.emailssummarizer.apirs.message</div>
+    <h1>MessageRequest <span class="class-kind-badge record">record</span></h1>
+    <div class="class-signature">
+      <span class="kw">public record</span> <span class="cn">MessageRequest</span>(
+        <span class="typ">String</span> title,
+        <span class="typ">String</span> body,
+        <span class="typ">String</span> categoryCode
+      )
+    </div>
+    <div class="class-desc">
+      <p>Immutable DTO carrying the data required to create or update a <a href="Message.html">Message</a>.</p>
+      <p>Used as the request body for <code>POST /messages</code> and
+      <code>PUT /messages/{id}</code>. On update, the <code>categoryCode</code> component is
+      accepted but currently ignored by the service layer — only <code>title</code> and
+      <code>body</code> are modified.</p>
+      <p>Validation of individual fields (non-blank <code>title</code>, existence of the
+      referenced <code>categoryCode</code>) is performed by <a href="MessageService.html">MessageService</a>, not at
+      the DTO level.</p>
+    </div>
+    <div class="see-also">
+      See also: <a href="MessageService.html">MessageService</a>
+    </div>
+  </div>
+
+  <h2 class="section-title">Record Components</h2>
+
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-name">title</span>
+      <span class="member-return-type">String</span>
+    </div>
+    <div class="member-card-body">
+      <div class="member-summary">The subject line of the message; must not be <code>null</code>.</div>
+    </div>
+  </div>
+
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-name">body</span>
+      <span class="member-return-type">String</span>
+    </div>
+    <div class="member-card-body">
+      <div class="member-summary">The full content of the message; may be <code>null</code>.</div>
+    </div>
+  </div>
+
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-name">categoryCode</span>
+      <span class="member-return-type">String</span>
+    </div>
+    <div class="member-card-body">
+      <div class="member-summary">The code of the category this message belongs to.</div>
+      <div class="member-detail">Must reference an existing <a href="../category/Category.html">Category</a> on creation.
+      Ignored on update — the category assignment of an existing message cannot be changed.</div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>emails-summarizer api-rs · v0.1.0</span>
+  <span>Generated Javadoc</span>
+</footer>
+
+</body>
+</html>

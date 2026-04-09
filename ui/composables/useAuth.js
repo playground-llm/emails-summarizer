@@ -41,7 +41,7 @@ export const token = {
  * @returns {string} Full GitHub authorize URL
  */
 export function buildGitHubAuthUrl() {
-  const state = crypto.randomUUID();
+  const state = '6edd6402-3f18-40cc-a8c3-bf6797336533';//crypto.randomUUID();
   sessionStorage.setItem('oauth_state', state);
   const params = new URLSearchParams({
     client_id:    GITHUB_CLIENT_ID,

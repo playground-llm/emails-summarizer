@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ResourceServerConfig — emails-summarizer Javadoc</title>
+  <link rel="stylesheet" href="../../../../stylesheet.css"/>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="../../../../index.html">emails&#8209;<span>summarizer</span></a>
+  <span class="badge">api-rs · v0.1.0</span>
+  <nav class="breadcrumb">
+    <a href="../../../../index.html">All Packages</a> /
+    com.emailssummarizer.apirs.security /
+    ResourceServerConfig
+  </nav>
+</header>
+
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Root</div>
+    <a href="../ApiRsApplication.html">ApiRsApplication <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">category</div>
+    <a href="../category/Category.html">Category <span class="kind">E</span></a>
+    <a href="../category/CategoryController.html">CategoryController <span class="kind">C</span></a>
+    <a href="../category/CategoryRepository.html">CategoryRepository <span class="kind">I</span></a>
+    <a href="../category/CategoryRequest.html">CategoryRequest <span class="kind">R</span></a>
+    <a href="../category/CategoryService.html">CategoryService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">message</div>
+    <a href="../message/Message.html">Message <span class="kind">E</span></a>
+    <a href="../message/MessageController.html">MessageController <span class="kind">C</span></a>
+    <a href="../message/MessageRepository.html">MessageRepository <span class="kind">I</span></a>
+    <a href="../message/MessageRequest.html">MessageRequest <span class="kind">R</span></a>
+    <a href="../message/MessageService.html">MessageService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">oauth</div>
+    <a href="../oauth/OAuthController.html">OAuthController <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">security</div>
+    <a href="GitHubOpaqueTokenIntrospector.html">GitHubOpaqueTokenIntrospector <span class="kind">C</span></a>
+    <a href="ResourceServerConfig.html" class="active">ResourceServerConfig <span class="kind">C</span></a>
+  </div>
+</nav>
+
+<main>
+  <div class="class-header">
+    <div class="package-name">com.emailssummarizer.apirs.security</div>
+    <h1>ResourceServerConfig <span class="class-kind-badge">class</span></h1>
+    <div class="annotations">
+      <span class="ann-badge">@Configuration</span>
+      <span class="ann-badge">@EnableWebSecurity</span>
+    </div>
+    <div class="class-signature">
+      <span class="kw">public class</span> <span class="cn">ResourceServerConfig</span>
+    </div>
+    <div class="class-desc">
+      <p>Spring Security configuration for the OAuth2 Resource Server.</p>
+      <p>Configures a stateless security filter chain that:</p>
+      <ul style="margin: 0.4rem 0 0 1.25rem; font-size: 0.9rem;">
+        <li>Validates incoming Bearer tokens via <a href="GitHubOpaqueTokenIntrospector.html">GitHubOpaqueTokenIntrospector</a>.</li>
+        <li>Enforces role-based access control on all category and message endpoints.</li>
+        <li>Permits <code>POST /oauth2/token</code> and the H2 console without authentication.</li>
+        <li>Applies CORS rules that allow only the known Vue UI origins.</li>
+      </ul>
+      <p>Session management is set to <code>STATELESS</code> — no HTTP session is created or used;
+      every request must carry a valid Bearer token (except permit-all paths).</p>
+    </div>
+    <div class="see-also">
+      See also: <a href="GitHubOpaqueTokenIntrospector.html">GitHubOpaqueTokenIntrospector</a>
+    </div>
+  </div>
+
+  <h2 class="section-title">Constructor Summary</h2>
+
+  <div class="member-card constructor">
+    <div class="member-card-header">
+      <span class="member-name">ResourceServerConfig</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> ResourceServerConfig(<span class="typ">GitHubOpaqueTokenIntrospector</span> introspector)
+      </div>
+      <div class="member-summary">Constructs a <code>ResourceServerConfig</code> with the required token introspector.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>introspector</strong> — the component that validates GitHub Bearer tokens and assigns roles; must not be <code>null</code></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <h2 class="section-title">Method Summary</h2>
+
+  <!-- securityFilterChain -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="ann-badge" style="font-size:0.65rem;">@Bean</span>
+      <span class="member-name">securityFilterChain</span>
+      <span class="member-return-type">SecurityFilterChain</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="ann">@Bean</span><br/>
+        <span class="kw">public</span> <span class="typ">SecurityFilterChain</span> securityFilterChain(<span class="typ">HttpSecurity</span> http)
+        <span class="kw">throws</span> <span class="typ">Exception</span>
+      </div>
+      <div class="member-summary">Builds and returns the primary <code>SecurityFilterChain</code> for the application.</div>
+      <div class="member-detail">
+        Authorization rules applied in order:
+        <ol style="margin: 0.4rem 0 0 1.25rem; font-size: 0.85rem;">
+          <li><code>/h2-console/**</code> and <code>POST /oauth2/token</code> — permit all (no token).</li>
+          <li><code>DELETE /categories/**</code>, <code>DELETE /messages/**</code> — requires <code>ROLE_DEL</code>.</li>
+          <li><code>POST /categories</code>, <code>POST /messages</code>, <code>PUT /categories/**</code>, <code>PUT /messages/**</code> — requires <code>ROLE_EDIT</code>.</li>
+          <li><code>GET /categories</code>, <code>GET /messages</code> — requires <code>ROLE_READ</code>.</li>
+          <li>All other requests — requires authentication (any valid token).</li>
+        </ol>
+      </div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>http</strong> — the <code>HttpSecurity</code> builder provided by Spring Security</td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>the configured <code>SecurityFilterChain</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-throws">@throws</span></td>
+          <td><strong>Exception</strong> if the security configuration cannot be built</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- corsConfigurationSource -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="ann-badge" style="font-size:0.65rem;">@Bean</span>
+      <span class="member-name">corsConfigurationSource</span>
+      <span class="member-return-type">CorsConfigurationSource</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="ann">@Bean</span><br/>
+        <span class="kw">public</span> <span class="typ">CorsConfigurationSource</span> corsConfigurationSource()
+      </div>
+      <div class="member-summary">Returns the CORS configuration applied to all endpoints (<code>/**</code>).</div>
+      <div class="member-detail">Allows requests from the known Vue UI origins served on localhost or
+      <code>local.example.com</code> on ports 5500 and 8000. Credentials
+      (<code>allowCredentials</code>) are explicitly disabled — authentication is carried
+      via the <code>Authorization: Bearer</code> header, not cookies.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>a <code>CorsConfigurationSource</code> that permits <code>GET</code>, <code>POST</code>,
+          <code>PUT</code>, <code>DELETE</code>, and <code>OPTIONS</code> from the configured origins
+          with <code>Authorization</code> and <code>Content-Type</code> headers</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>emails-summarizer api-rs · v0.1.0</span>
+  <span>Generated Javadoc</span>
+</footer>
+
+</body>
+</html>

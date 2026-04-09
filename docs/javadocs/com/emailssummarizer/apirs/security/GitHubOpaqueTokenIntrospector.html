@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GitHubOpaqueTokenIntrospector — emails-summarizer Javadoc</title>
+  <link rel="stylesheet" href="../../../../stylesheet.css"/>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="../../../../index.html">emails&#8209;<span>summarizer</span></a>
+  <span class="badge">api-rs · v0.1.0</span>
+  <nav class="breadcrumb">
+    <a href="../../../../index.html">All Packages</a> /
+    com.emailssummarizer.apirs.security /
+    GitHubOpaqueTokenIntrospector
+  </nav>
+</header>
+
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Root</div>
+    <a href="../ApiRsApplication.html">ApiRsApplication <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">category</div>
+    <a href="../category/Category.html">Category <span class="kind">E</span></a>
+    <a href="../category/CategoryController.html">CategoryController <span class="kind">C</span></a>
+    <a href="../category/CategoryRepository.html">CategoryRepository <span class="kind">I</span></a>
+    <a href="../category/CategoryRequest.html">CategoryRequest <span class="kind">R</span></a>
+    <a href="../category/CategoryService.html">CategoryService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">message</div>
+    <a href="../message/Message.html">Message <span class="kind">E</span></a>
+    <a href="../message/MessageController.html">MessageController <span class="kind">C</span></a>
+    <a href="../message/MessageRepository.html">MessageRepository <span class="kind">I</span></a>
+    <a href="../message/MessageRequest.html">MessageRequest <span class="kind">R</span></a>
+    <a href="../message/MessageService.html">MessageService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">oauth</div>
+    <a href="../oauth/OAuthController.html">OAuthController <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">security</div>
+    <a href="GitHubOpaqueTokenIntrospector.html" class="active">GitHubOpaqueTokenIntrospector <span class="kind">C</span></a>
+    <a href="ResourceServerConfig.html">ResourceServerConfig <span class="kind">C</span></a>
+  </div>
+</nav>
+
+<main>
+  <div class="class-header">
+    <div class="package-name">com.emailssummarizer.apirs.security</div>
+    <h1>GitHubOpaqueTokenIntrospector <span class="class-kind-badge">class</span></h1>
+    <div class="annotations">
+      <span class="ann-badge">@Component</span>
+    </div>
+    <div class="class-signature">
+      <span class="kw">public class</span> <span class="cn">GitHubOpaqueTokenIntrospector</span>
+      <span class="ext">implements OpaqueTokenIntrospector</span>
+    </div>
+    <div class="class-desc">
+      <p>Validates GitHub opaque access tokens and assigns Spring Security granted authorities.</p>
+      <p>Calls <code>GET https://api.github.com/user</code> with the Bearer token to confirm
+      validity and retrieve the authenticated user's GitHub <code>login</code>. The login is
+      matched (case-insensitively) against three independent allow-lists to assign
+      <code>ROLE_READ</code>, <code>ROLE_EDIT</code>, and/or <code>ROLE_DEL</code>.</p>
+      <p>Allow-lists are injected from <code>app.readers</code>, <code>app.editors</code>, and
+      <code>app.deleters</code> application properties, which are bound from environment variables
+      <code>READERS_GITHUB_LOGINS</code>, <code>EDITORS_GITHUB_LOGINS</code>, and
+      <code>DELETERS_GITHUB_LOGINS</code> respectively. Each variable is a comma-separated list
+      of GitHub login names. Roles are independent — a user must appear in each list
+      separately to hold multiple roles.</p>
+      <p>Warnings are logged at startup if any allow-list is empty, since this would deny
+      all requests for the corresponding HTTP methods.</p>
+    </div>
+    <div class="see-also">
+      See also: <a href="ResourceServerConfig.html">ResourceServerConfig</a>
+    </div>
+  </div>
+
+  <h2 class="section-title">Constructor Summary</h2>
+
+  <div class="member-card constructor">
+    <div class="member-card-header">
+      <span class="member-name">GitHubOpaqueTokenIntrospector</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> GitHubOpaqueTokenIntrospector(
+          <span class="ann">@Value("${app.readers:}")</span> <span class="typ">String</span> readersRaw,
+          <span class="ann">@Value("${app.editors:}")</span> <span class="typ">String</span> editorsRaw,
+          <span class="ann">@Value("${app.deleters:}")</span> <span class="typ">String</span> deletersRaw)
+      </div>
+      <div class="member-summary">Constructs the introspector, parsing and normalising each allow-list at startup.</div>
+      <div class="member-detail">Empty or blank values for any allow-list are accepted and result in no users
+      being granted the corresponding role; a warning is logged in each such case.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>readersRaw</strong> — comma-separated GitHub logins that should receive <code>ROLE_READ</code>; may be empty or blank</td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>editorsRaw</strong> — comma-separated GitHub logins that should receive <code>ROLE_EDIT</code>; may be empty or blank</td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>deletersRaw</strong> — comma-separated GitHub logins that should receive <code>ROLE_DEL</code>; may be empty or blank</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <h2 class="section-title">Method Summary</h2>
+
+  <!-- introspect -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge override">@Override</span>
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">introspect</span>
+      <span class="member-return-type">OAuth2AuthenticatedPrincipal</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="ann">@Override</span><br/>
+        <span class="kw">public</span> <span class="typ">OAuth2AuthenticatedPrincipal</span> introspect(<span class="typ">String</span> token)
+      </div>
+      <div class="member-summary">Introspects the given opaque GitHub token by calling the GitHub user-info endpoint.</div>
+      <div class="member-detail">Sends a <code>GET https://api.github.com/user</code> request with the token as a
+      Bearer credential. On success, extracts the GitHub <code>login</code> and builds a
+      <code>GitHubPrincipal</code> with the applicable granted authorities based on the
+      configured allow-lists.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>token</strong> — the raw GitHub access token to validate; must not be <code>null</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>an <code>OAuth2AuthenticatedPrincipal</code> representing the authenticated
+          GitHub user with zero or more of <code>ROLE_READ</code>, <code>ROLE_EDIT</code>,
+          <code>ROLE_DEL</code> granted authorities</td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-throws">@throws</span></td>
+          <td><strong>BadOpaqueTokenException</strong> if the token is invalid, expired, or the GitHub
+          user-info endpoint returns a non-200 response, or if the response does not contain a <code>login</code> field</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <h2 class="section-title">Nested Type Summary</h2>
+
+  <!-- GitHubPrincipal -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">static</span>
+      <span class="member-name">GitHubPrincipal</span>
+      <span class="member-return-type">class</span>
+    </div>
+    <div class="member-card-body">
+      <div class="member-summary">Minimal <code>OAuth2AuthenticatedPrincipal</code> backed by GitHub user attributes.</div>
+      <div class="member-detail">Holds the GitHub <code>login</code> as the principal name along with a subset of
+      user attributes (<code>login</code>, <code>id</code>, <code>name</code>) and the granted
+      authorities assigned by the allow-list checks in <code>introspect(String)</code>.</div>
+
+      <p style="margin-top:0.75rem;font-weight:600;font-size:0.85rem;">Constructor</p>
+      <div class="method-signature" style="margin-top:0.3rem;">
+        GitHubPrincipal(<span class="typ">String</span> name, <span class="typ">Map&lt;String, Object&gt;</span> attributes, <span class="typ">List&lt;GrantedAuthority&gt;</span> authorities)
+      </div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>name</strong> — the GitHub login of the authenticated user; must not be <code>null</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>attributes</strong> — a map of user attributes (<code>login</code>, <code>id</code>, <code>name</code>); must not be <code>null</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>authorities</strong> — the list of granted authorities assigned to this principal; must not be <code>null</code>, may be empty</td>
+        </tr>
+      </table>
+
+      <p style="margin-top:0.75rem;font-weight:600;font-size:0.85rem;">Methods</p>
+      <table class="tags-table" style="margin-top:0.3rem;">
+        <tr>
+          <td><code>getAttributes()</code></td>
+          <td>Returns the GitHub user attributes — at least <code>login</code>, <code>id</code>, and <code>name</code>; never <code>null</code>.</td>
+        </tr>
+        <tr>
+          <td><code>getAuthorities()</code></td>
+          <td>Returns the granted authorities (<code>ROLE_READ</code>, <code>ROLE_EDIT</code>, <code>ROLE_DEL</code>) assigned to this principal; never <code>null</code>.</td>
+        </tr>
+        <tr>
+          <td><code>getName()</code></td>
+          <td>Returns the lower-cased GitHub login used as the principal name; never <code>null</code>.</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>emails-summarizer api-rs · v0.1.0</span>
+  <span>Generated Javadoc</span>
+</footer>
+
+</body>
+</html>
