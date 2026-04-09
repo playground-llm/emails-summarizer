@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AppUserRepository — emails-summarizer Javadoc</title>
+  <link rel="stylesheet" href="../../../../stylesheet.css"/>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="../../../../index.html">emails&#8209;<span>summarizer</span></a>
+  <span class="badge">api-rs · v0.1.0</span>
+  <nav class="breadcrumb">
+    <a href="../../../../index.html">All Packages</a> /
+    com.emailssummarizer.apirs.user /
+    AppUserRepository
+  </nav>
+</header>
+
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Root</div>
+    <a href="../ApiRsApplication.html">ApiRsApplication <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">category</div>
+    <a href="../category/Category.html">Category <span class="kind">E</span></a>
+    <a href="../category/CategoryController.html">CategoryController <span class="kind">C</span></a>
+    <a href="../category/CategoryRepository.html">CategoryRepository <span class="kind">I</span></a>
+    <a href="../category/CategoryRequest.html">CategoryRequest <span class="kind">R</span></a>
+    <a href="../category/CategoryService.html">CategoryService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">message</div>
+    <a href="../message/Message.html">Message <span class="kind">E</span></a>
+    <a href="../message/MessageController.html">MessageController <span class="kind">C</span></a>
+    <a href="../message/MessageRepository.html">MessageRepository <span class="kind">I</span></a>
+    <a href="../message/MessageRequest.html">MessageRequest <span class="kind">R</span></a>
+    <a href="../message/MessageService.html">MessageService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">oauth</div>
+    <a href="../oauth/OAuthController.html">OAuthController <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">security</div>
+    <a href="../security/GitHubOpaqueTokenIntrospector.html">GitHubOpaqueTokenIntrospector <span class="kind">C</span></a>
+    <a href="../security/ResourceServerConfig.html">ResourceServerConfig <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">user</div>
+    <a href="AppUser.html">AppUser <span class="kind">E</span></a>
+    <a href="AppUserRepository.html" class="active">AppUserRepository <span class="kind">I</span></a>
+    <a href="UserRole.html">UserRole <span class="kind">E</span></a>
+    <a href="UserRoleRepository.html">UserRoleRepository <span class="kind">I</span></a>
+    <a href="UserService.html">UserService <span class="kind">C</span></a>
+  </div>
+</nav>
+
+<main>
+  <div class="class-header">
+    <div class="package-name">com.emailssummarizer.apirs.user</div>
+    <h1>AppUserRepository <span class="class-kind-badge">interface</span></h1>
+    <div class="class-signature">
+      <span class="kw">public interface</span> <span class="cn">AppUserRepository</span>
+      <span class="kw">extends</span> JpaRepository&lt;AppUser, String&gt;
+    </div>
+    <div class="class-desc">
+      <p>Spring Data JPA repository for <a href="AppUser.html">AppUser</a> entities.</p>
+      <p>Provides standard CRUD operations inherited from <code>JpaRepository</code>. The primary
+      key type is <code>String</code> (the GitHub login).</p>
+      <p>This repository is called only from <a href="UserService.html">UserService</a>;
+      no other class should inject it directly.</p>
+    </div>
+    <div class="see-also">
+      See also:
+      <a href="UserService.html">UserService</a>
+    </div>
+  </div>
+
+  <h2 class="section-title">Method Summary</h2>
+
+  <p class="member-summary">Inherits all standard CRUD methods from <code>JpaRepository&lt;AppUser, String&gt;</code>.
+  No additional query methods are defined.</p>
+</main>
+
+<footer>
+  <span>emails-summarizer api-rs · v0.1.0</span>
+  <span>Generated Javadoc</span>
+</footer>
+
+</body>
+</html>

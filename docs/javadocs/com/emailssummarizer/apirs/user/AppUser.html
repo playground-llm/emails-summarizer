@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AppUser — emails-summarizer Javadoc</title>
+  <link rel="stylesheet" href="../../../../stylesheet.css"/>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="../../../../index.html">emails&#8209;<span>summarizer</span></a>
+  <span class="badge">api-rs · v0.1.0</span>
+  <nav class="breadcrumb">
+    <a href="../../../../index.html">All Packages</a> /
+    com.emailssummarizer.apirs.user /
+    AppUser
+  </nav>
+</header>
+
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Root</div>
+    <a href="../ApiRsApplication.html">ApiRsApplication <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">category</div>
+    <a href="../category/Category.html">Category <span class="kind">E</span></a>
+    <a href="../category/CategoryController.html">CategoryController <span class="kind">C</span></a>
+    <a href="../category/CategoryRepository.html">CategoryRepository <span class="kind">I</span></a>
+    <a href="../category/CategoryRequest.html">CategoryRequest <span class="kind">R</span></a>
+    <a href="../category/CategoryService.html">CategoryService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">message</div>
+    <a href="../message/Message.html">Message <span class="kind">E</span></a>
+    <a href="../message/MessageController.html">MessageController <span class="kind">C</span></a>
+    <a href="../message/MessageRepository.html">MessageRepository <span class="kind">I</span></a>
+    <a href="../message/MessageRequest.html">MessageRequest <span class="kind">R</span></a>
+    <a href="../message/MessageService.html">MessageService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">oauth</div>
+    <a href="../oauth/OAuthController.html">OAuthController <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">security</div>
+    <a href="../security/GitHubOpaqueTokenIntrospector.html">GitHubOpaqueTokenIntrospector <span class="kind">C</span></a>
+    <a href="../security/ResourceServerConfig.html">ResourceServerConfig <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">user</div>
+    <a href="AppUser.html" class="active">AppUser <span class="kind">E</span></a>
+    <a href="AppUserRepository.html">AppUserRepository <span class="kind">I</span></a>
+    <a href="UserRole.html">UserRole <span class="kind">E</span></a>
+    <a href="UserRoleRepository.html">UserRoleRepository <span class="kind">I</span></a>
+    <a href="UserService.html">UserService <span class="kind">C</span></a>
+  </div>
+</nav>
+
+<main>
+  <div class="class-header">
+    <div class="package-name">com.emailssummarizer.apirs.user</div>
+    <h1>AppUser <span class="class-kind-badge">class</span></h1>
+    <div class="annotations">
+      <span class="ann-badge">@Entity</span>
+      <span class="ann-badge">@Table(name = "USERS")</span>
+    </div>
+    <div class="class-signature">
+      <span class="kw">public class</span> <span class="cn">AppUser</span>
+    </div>
+    <div class="class-desc">
+      <p>JPA entity representing a registered application user.</p>
+      <p>Each row corresponds to a GitHub user who has authenticated at least once.
+      The GitHub <code>login</code> is used as the natural primary key because it is unique
+      across GitHub and is already used as the principal name throughout the security layer.</p>
+      <p>Instances are created automatically by
+      <a href="UserService.html">UserService#findOrRegister</a> on first login;
+      they are never created manually.</p>
+    </div>
+    <div class="see-also">
+      See also:
+      <a href="UserRole.html">UserRole</a>,
+      <a href="UserService.html">UserService</a>
+    </div>
+  </div>
+
+  <h2 class="section-title">Constructor Summary</h2>
+
+  <div class="member-card constructor">
+    <div class="member-card-header">
+      <span class="member-name">AppUser</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> AppUser(<span class="typ">String</span> login, <span class="typ">Long</span> githubId, <span class="typ">String</span> name, <span class="typ">String</span> avatarUrl)
+      </div>
+      <div class="member-summary">Constructs a new <code>AppUser</code> with the given GitHub profile data.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>login</strong> — GitHub login name; must not be <code>null</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>githubId</strong> — numeric GitHub user ID; may be <code>null</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>name</strong> — display name from GitHub; may be <code>null</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>avatarUrl</strong> — GitHub avatar URL; may be <code>null</code></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <h2 class="section-title">Method Summary</h2>
+
+  <!-- getLogin -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">getLogin</span>
+      <span class="member-return-type">String</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> <span class="typ">String</span> getLogin()
+      </div>
+      <div class="member-summary">Returns the GitHub login of this user, which is also the primary key.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>the GitHub login; never <code>null</code></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- getGithubId -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">getGithubId</span>
+      <span class="member-return-type">Long</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> <span class="typ">Long</span> getGithubId()
+      </div>
+      <div class="member-summary">Returns the numeric GitHub user ID.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>the GitHub user ID; may be <code>null</code></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- getName -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">getName</span>
+      <span class="member-return-type">String</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> <span class="typ">String</span> getName()
+      </div>
+      <div class="member-summary">Returns the display name of the user as provided by GitHub.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>the display name; may be <code>null</code></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- getAvatarUrl -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">getAvatarUrl</span>
+      <span class="member-return-type">String</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> <span class="typ">String</span> getAvatarUrl()
+      </div>
+      <div class="member-summary">Returns the URL of the user's GitHub avatar image.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>the avatar URL; may be <code>null</code></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>emails-summarizer api-rs · v0.1.0</span>
+  <span>Generated Javadoc</span>
+</footer>
+
+</body>
+</html>
