@@ -10,3 +10,4 @@ bin/
 
 # Local environment secrets
 local/
+cline_task.log
