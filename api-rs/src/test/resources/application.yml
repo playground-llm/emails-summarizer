@@ -25,8 +25,3 @@ spring:
         opaquetoken:
           client-id: test-client-id
           client-secret: test-client-secret
-
-app:
-  readers: reader-user
-  editors: editor-user
-  deleters: deleter-user

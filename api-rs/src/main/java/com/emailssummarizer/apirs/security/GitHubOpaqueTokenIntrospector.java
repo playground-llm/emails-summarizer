@@ -1,8 +1,8 @@
 package com.emailssummarizer.apirs.security;
 
+import com.emailssummarizer.apirs.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
@@ -11,33 +11,25 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.Arrays;
 
 /**
- * Validates GitHub opaque access tokens and assigns Spring Security granted authorities.
+ * Validates GitHub opaque access tokens and assigns Spring Security granted authorities
+ * based on roles stored in the database.
  *
  * <p>Calls {@code GET https://api.github.com/user} with the Bearer token to confirm
- * validity and retrieve the authenticated user's GitHub {@code login}. The login is
- * matched (case-insensitively) against three independent allow-lists to assign
- * {@code ROLE_READ}, {@code ROLE_EDIT}, and/or {@code ROLE_DEL}.
+ * validity and retrieve the authenticated user's GitHub profile ({@code login},
+ * {@code id}, {@code name}, {@code avatar_url}).
  *
- * <p>Allow-lists are injected from {@code app.readers}, {@code app.editors}, and
- * {@code app.deleters} application properties, which are bound from environment variables
- * {@code READERS_GITHUB_LOGINS}, {@code EDITORS_GITHUB_LOGINS}, and
- * {@code DELETERS_GITHUB_LOGINS} respectively. Each variable is a comma-separated list
- * of GitHub login names. Roles are independent — a user must appear in each list
- * separately to hold multiple roles.
- *
- * <p>Warnings are logged at startup if any allow-list is empty, since this would deny
- * all requests for the corresponding HTTP methods.
+ * <p>The GitHub {@code login} is then passed to {@link UserService#findOrRegister},
+ * which either returns the user's existing roles from the {@code ROLES} table or —
+ * if this is the user's first login — creates a new entry in {@code USERS} and assigns
+ * {@code ROLE_READ} automatically.
  *
  * @see ResourceServerConfig
+ * @see UserService
  */
 @Component
 public class GitHubOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
@@ -46,66 +38,30 @@ public class GitHubOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
     private static final String GITHUB_USER_URL = "https://api.github.com/user";
 
     private final RestClient restClient;
-    private final Set<String> readers;
-    private final Set<String> editors;
-    private final Set<String> deleters;
+    private final UserService userService;
 
     /**
-     * Constructs the introspector, parsing and normalising each allow-list at startup.
+     * Constructs the introspector with the user service used for role resolution.
      *
-     * <p>Empty or blank values for any allow-list are accepted and result in no users
-     * being granted the corresponding role; a warning is logged in each such case.
-     *
-     * @param readersRaw   comma-separated GitHub logins that should receive {@code ROLE_READ};
-     *                     may be empty or blank
-     * @param editorsRaw   comma-separated GitHub logins that should receive {@code ROLE_EDIT};
-     *                     may be empty or blank
-     * @param deletersRaw  comma-separated GitHub logins that should receive {@code ROLE_DEL};
-     *                     may be empty or blank
+     * @param userService  service that registers new users and retrieves roles;
+     *                     must not be {@code null}
      */
-    public GitHubOpaqueTokenIntrospector(
-            @Value("${app.readers:}") String readersRaw,
-            @Value("${app.editors:}") String editorsRaw,
-            @Value("${app.deleters:}") String deletersRaw) {
-        this.restClient = RestClient.builder().baseUrl(GITHUB_USER_URL).build();
-        this.readers  = parseLogins(readersRaw);
-        this.editors  = parseLogins(editorsRaw);
-        this.deleters = parseLogins(deletersRaw);
-
-        if (readers.isEmpty())  log.warn("READERS_GITHUB_LOGINS is empty — GET /categories and GET /messages will be denied for all users");
-        if (editors.isEmpty())  log.warn("EDITORS_GITHUB_LOGINS is empty — POST/PUT on /categories and /messages will be denied for all users");
-        if (deleters.isEmpty()) log.warn("DELETERS_GITHUB_LOGINS is empty — DELETE on /categories and /messages will be denied for all users");
-    }
-
-    /**
-     * Parses a comma-separated string of GitHub login names into a lower-cased set.
-     *
-     * @param raw  the raw comma-separated string from configuration; may be {@code null}
-     *             or blank
-     * @return     an immutable set of lower-cased, trimmed login names; empty if {@code raw}
-     *             is blank or {@code null}
-     */
-    private static Set<String> parseLogins(String raw) {
-        if (raw == null || raw.isBlank()) return Set.of();
-        return Arrays.stream(raw.split(","))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .map(String::toLowerCase)
-                .collect(Collectors.toSet());
+    public GitHubOpaqueTokenIntrospector(UserService userService) {
+        this.restClient  = RestClient.builder().baseUrl(GITHUB_USER_URL).build();
+        this.userService = userService;
     }
 
     /**
      * Introspects the given opaque GitHub token by calling the GitHub user-info endpoint.
      *
      * <p>Sends a {@code GET https://api.github.com/user} request with the token as a
-     * Bearer credential. On success, extracts the GitHub {@code login} and builds a
-     * {@link GitHubPrincipal} with the applicable granted authorities based on the
-     * configured allow-lists.
+     * Bearer credential. On success, extracts the GitHub {@code login} and delegates to
+     * {@link UserService#findOrRegister} to obtain the applicable Spring Security roles.
+     * New users receive {@code ROLE_READ} automatically on their first authentication.
      *
      * @param token  the raw GitHub access token to validate; must not be {@code null}
      * @return       an {@link OAuth2AuthenticatedPrincipal} representing the authenticated
-     *               GitHub user with zero or more of {@code ROLE_READ}, {@code ROLE_EDIT},
-     *               {@code ROLE_DEL} granted authorities
+     *               GitHub user with the roles stored in the database
      * @throws BadOpaqueTokenException  if the token is invalid, expired, or the GitHub
      *                                  user-info endpoint returns a non-200 response, or
      *                                  if the response does not contain a {@code login} field
@@ -129,27 +85,49 @@ public class GitHubOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
             throw new BadOpaqueTokenException("GitHub token introspection returned no user info");
         }
 
-        String login = ((String) userInfo.get("login")).toLowerCase();
-        Object id    = userInfo.getOrDefault("id", 0);
-        Object name  = userInfo.getOrDefault("name", login);
-        if (name == null) name = login;
+        String login     = ((String) userInfo.get("login")).toLowerCase();
+        Long   githubId  = tolong(userInfo.get("id"));
+        String name      = userInfo.get("name") != null ? (String) userInfo.get("name") : login;
+        String avatarUrl = (String) userInfo.get("avatar_url");
 
-        Map<String, Object> attributes = Map.of("login", login, "id", id, "name", name);
+        List<String> roles = userService.findOrRegister(login, githubId, name, avatarUrl);
+        log.debug("Introspected token for '{}', roles={}", login, roles);
 
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        if (readers.contains(login))  authorities.add(new SimpleGrantedAuthority("ROLE_READ"));
-        if (editors.contains(login))  authorities.add(new SimpleGrantedAuthority("ROLE_EDIT"));
-        if (deleters.contains(login)) authorities.add(new SimpleGrantedAuthority("ROLE_DEL"));
+        List<GrantedAuthority> authorities = roles.stream()
+                .<GrantedAuthority>map(SimpleGrantedAuthority::new)
+                .toList();
+
+        Map<String, Object> attributes = Map.of(
+                "login",      login,
+                "id",         githubId != null ? githubId : 0L,
+                "name",       name,
+                "avatar_url", avatarUrl != null ? avatarUrl : ""
+        );
 
         return new GitHubPrincipal(login, attributes, authorities);
+    }
+
+    /**
+     * Safely converts a numeric value from the GitHub API response to a {@code Long}.
+     *
+     * <p>GitHub IDs arrive as JSON numbers and are deserialised as {@code Integer} or
+     * {@code Long} depending on their magnitude; this helper handles both cases.
+     *
+     * @param value  the raw value from the user-info map; may be {@code null}
+     * @return       the value as a {@code Long}, or {@code null} if {@code value} is
+     *               {@code null} or not a {@link Number}
+     */
+    private static Long tolong(Object value) {
+        if (value instanceof Number n) return n.longValue();
+        return null;
     }
 
     /**
      * Minimal {@link OAuth2AuthenticatedPrincipal} backed by GitHub user attributes.
      *
      * <p>Holds the GitHub {@code login} as the principal name along with a subset of
-     * user attributes ({@code login}, {@code id}, {@code name}) and the granted
-     * authorities assigned by the allow-list checks in
+     * user attributes ({@code login}, {@code id}, {@code name}, {@code avatar_url}) and
+     * the granted authorities resolved from the database by
      * {@link GitHubOpaqueTokenIntrospector#introspect(String)}.
      */
     static class GitHubPrincipal implements OAuth2AuthenticatedPrincipal {
@@ -162,9 +140,9 @@ public class GitHubOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
          * Constructs a {@code GitHubPrincipal} with the given identity and authorities.
          *
          * @param name        the GitHub login of the authenticated user; must not be {@code null}
-         * @param attributes  a map of user attributes ({@code login}, {@code id}, {@code name});
-         *                    must not be {@code null}
-         * @param authorities the list of granted authorities assigned to this principal;
+         * @param attributes  a map of user attributes ({@code login}, {@code id}, {@code name},
+         *                    {@code avatar_url}); must not be {@code null}
+         * @param authorities the list of granted authorities resolved from the DB;
          *                    must not be {@code null}, may be empty
          */
         GitHubPrincipal(String name, Map<String, Object> attributes, List<GrantedAuthority> authorities) {
@@ -176,8 +154,8 @@ public class GitHubOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         /**
          * Returns the GitHub user attributes associated with this principal.
          *
-         * @return a map containing at least {@code login}, {@code id}, and {@code name};
-         *         never {@code null}
+         * @return a map containing at least {@code login}, {@code id}, {@code name}, and
+         *         {@code avatar_url}; never {@code null}
          */
         @Override
         public Map<String, Object> getAttributes() { return attributes; }
@@ -185,9 +163,9 @@ public class GitHubOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         /**
          * Returns the granted authorities assigned to this principal.
          *
-         * @return a collection of zero or more authorities from
+         * @return a collection of one or more authorities from
          *         {@code ROLE_READ}, {@code ROLE_EDIT}, {@code ROLE_DEL};
-         *         never {@code null}
+         *         never {@code null} or empty (every user has at least {@code ROLE_READ})
          */
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() { return authorities; }

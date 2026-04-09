@@ -72,7 +72,8 @@ public class ResourceServerConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
                 // Public paths — no token required
-                .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/h2-console").permitAll()
+                // .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/oauth2/token").permitAll()
                 // DELETE requires ROLE_DEL
                 .requestMatchers(HttpMethod.DELETE, "/categories/**", "/messages/**").hasRole("DEL")
@@ -115,7 +116,8 @@ public class ResourceServerConfig {
             "http://127.0.0.1:5500",
             "http://localhost:8000",
             "http://127.0.0.1:8000",
-            "http://local.example.com:5500"
+            "http://local.example.com:5500",
+            "http://local.example.com:8080"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
