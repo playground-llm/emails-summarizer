@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UserRole — emails-summarizer Javadoc</title>
+  <link rel="stylesheet" href="../../../../stylesheet.css"/>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="../../../../index.html">emails&#8209;<span>summarizer</span></a>
+  <span class="badge">api-rs · v0.1.0</span>
+  <nav class="breadcrumb">
+    <a href="../../../../index.html">All Packages</a> /
+    com.emailssummarizer.apirs.user /
+    UserRole
+  </nav>
+</header>
+
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Root</div>
+    <a href="../ApiRsApplication.html">ApiRsApplication <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">category</div>
+    <a href="../category/Category.html">Category <span class="kind">E</span></a>
+    <a href="../category/CategoryController.html">CategoryController <span class="kind">C</span></a>
+    <a href="../category/CategoryRepository.html">CategoryRepository <span class="kind">I</span></a>
+    <a href="../category/CategoryRequest.html">CategoryRequest <span class="kind">R</span></a>
+    <a href="../category/CategoryService.html">CategoryService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">message</div>
+    <a href="../message/Message.html">Message <span class="kind">E</span></a>
+    <a href="../message/MessageController.html">MessageController <span class="kind">C</span></a>
+    <a href="../message/MessageRepository.html">MessageRepository <span class="kind">I</span></a>
+    <a href="../message/MessageRequest.html">MessageRequest <span class="kind">R</span></a>
+    <a href="../message/MessageService.html">MessageService <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">oauth</div>
+    <a href="../oauth/OAuthController.html">OAuthController <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">security</div>
+    <a href="../security/GitHubOpaqueTokenIntrospector.html">GitHubOpaqueTokenIntrospector <span class="kind">C</span></a>
+    <a href="../security/ResourceServerConfig.html">ResourceServerConfig <span class="kind">C</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">user</div>
+    <a href="AppUser.html">AppUser <span class="kind">E</span></a>
+    <a href="AppUserRepository.html">AppUserRepository <span class="kind">I</span></a>
+    <a href="UserRole.html" class="active">UserRole <span class="kind">E</span></a>
+    <a href="UserRoleRepository.html">UserRoleRepository <span class="kind">I</span></a>
+    <a href="UserService.html">UserService <span class="kind">C</span></a>
+  </div>
+</nav>
+
+<main>
+  <div class="class-header">
+    <div class="package-name">com.emailssummarizer.apirs.user</div>
+    <h1>UserRole <span class="class-kind-badge">class</span></h1>
+    <div class="annotations">
+      <span class="ann-badge">@Entity</span>
+      <span class="ann-badge">@Table(name = "ROLES")</span>
+    </div>
+    <div class="class-signature">
+      <span class="kw">public class</span> <span class="cn">UserRole</span>
+    </div>
+    <div class="class-desc">
+      <p>JPA entity representing a single role granted to an application user.</p>
+      <p>Each row links a GitHub login to one Spring Security role string
+      (e.g. <code>ROLE_READ</code>, <code>ROLE_EDIT</code>, <code>ROLE_DEL</code>). A user may hold
+      multiple roles, each stored as a separate row. The <code>(login, role)</code> combination
+      is unique (enforced both by the DB constraint and by
+      <a href="UserService.html">UserService</a>).</p>
+      <p>New users are automatically assigned <code>ROLE_READ</code> by
+      <a href="UserService.html">UserService#findOrRegister</a> on their first login.</p>
+    </div>
+    <div class="see-also">
+      See also:
+      <a href="AppUser.html">AppUser</a>,
+      <a href="UserService.html">UserService</a>
+    </div>
+  </div>
+
+  <h2 class="section-title">Constructor Summary</h2>
+
+  <div class="member-card constructor">
+    <div class="member-card-header">
+      <span class="member-name">UserRole</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> UserRole(<span class="typ">String</span> login, <span class="typ">String</span> role)
+      </div>
+      <div class="member-summary">Constructs a new <code>UserRole</code> granting the given role to the given user.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>login</strong> — GitHub login of the user; must not be <code>null</code></td>
+        </tr>
+        <tr>
+          <td><span class="tag-label tag-param">@param</span></td>
+          <td><strong>role</strong> — Spring Security role string; must not be <code>null</code></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <h2 class="section-title">Method Summary</h2>
+
+  <!-- getId -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">getId</span>
+      <span class="member-return-type">Long</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> <span class="typ">Long</span> getId()
+      </div>
+      <div class="member-summary">Returns the surrogate identifier of this role row.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>the auto-generated ID</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- getLogin -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">getLogin</span>
+      <span class="member-return-type">String</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> <span class="typ">String</span> getLogin()
+      </div>
+      <div class="member-summary">Returns the GitHub login of the user who holds this role.</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>the GitHub login; never <code>null</code></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- getRole -->
+  <div class="member-card">
+    <div class="member-card-header">
+      <span class="member-modifier-badge">public</span>
+      <span class="member-name">getRole</span>
+      <span class="member-return-type">String</span>
+    </div>
+    <div class="member-card-body">
+      <div class="method-signature">
+        <span class="kw">public</span> <span class="typ">String</span> getRole()
+      </div>
+      <div class="member-summary">Returns the Spring Security role string (e.g. <code>ROLE_READ</code>).</div>
+      <table class="tags-table">
+        <tr>
+          <td><span class="tag-label tag-return">@return</span></td>
+          <td>the role; never <code>null</code></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>emails-summarizer api-rs · v0.1.0</span>
+  <span>Generated Javadoc</span>
+</footer>
+
+</body>
+</html>

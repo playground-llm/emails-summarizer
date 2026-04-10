@@ -25,9 +25,6 @@
 ```bash
 export GITHUB_CLIENT_ID=<your-client-id>
 export GITHUB_CLIENT_SECRET=<your-client-secret>
-export READERS_GITHUB_LOGINS=<comma-separated-github-logins>
-export EDITORS_GITHUB_LOGINS=<comma-separated-github-logins>
-export DELETERS_GITHUB_LOGINS=<comma-separated-github-logins>
 ```
 
 **Step 2 — Start the backend**
@@ -47,6 +44,6 @@ cd ui && python3 -m http.server 5500
 
 **Step 4 — Open the app**
 
-Navigate to `http://localhost:5500/index.html`. The app redirects to GitHub for login on the first visit.
+Navigate to `http://localhost:5500/index.html`. The app redirects to GitHub for login on the first visit. On first login your GitHub account is automatically registered with `ROLE_READ`. Additional roles (`ROLE_EDIT`, `ROLE_DEL`) can be granted via the [H2 console](http://localhost:8080/h2-console) after startup — see [auth.md](auth.md) for details.
 
 > The UI **must** be served over HTTP — opening `index.html` directly as `file://` breaks OAuth2 redirect URIs.

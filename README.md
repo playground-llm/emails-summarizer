@@ -190,3 +190,29 @@ Full project documentation is available in the [`docs/`](docs/index.md) director
 - [`docs/api-rs/`](docs/api-rs/index.md) — Backend API reference
 - [`docs/ui/`](docs/ui/index.md) — Frontend reference
 - [`docs/javadocs/`](docs/javadocs/index.html) — Generated Javadoc
+
+---
+
+## Cline Commands History
+
+The following commands from the shell history are related to Cline (retrieved via `history | grep 'cline'`):
+
+```bash
+ cline -y "Generate README.md file, where to describe an overview of project, how to build the project and how to run the subprojects"
+ cline "commit the current changes, with a descriptive message and push the changes to current branch"
+ cline -y --json "retrives all the subprojects; foreach returns project name, short description, build command, run command"
+ client -y "add in README.md file a new section, where to enumerates the last commands from bash (call history), that their names start with cline: history | grep 'cline'"
+ cline -y "add in README.md file a new section, where to enumerates the last commands from bash (call history), that their names start with cline: history | grep 'cline'"
+```
+
+Run cross-worktree context piping
+
+```bash
+git branch feature/auth
+git push origin feature/auth
+git worktree add ../emails-summarizer-auth feature/auth
+
+cline --cwd ../emails-summarizer-auth -y "now users' roles are setup using env vars like READERS_GITHUB_LOGINS, EDITORS_GITHUB_LOGINS, DELETERS_GITHUB_LOGINS; change like follow: create DB tables users - containing user informations (login, and others infos that can be extracted from github), roles - link each user to a list of roles (id, login - pk of users tables, role); create Repository and Service class that implement the functionality; when user login search his login into the users tables and if it is found retrieves his roles, otherwise creates an entry to users and assign ROLE_READ in roles table." 
+
+git worktree remove ../emails-summarizer-auth
+```
