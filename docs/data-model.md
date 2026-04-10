@@ -6,7 +6,7 @@ This document describes the database schema, entity relationships, and data acce
 
 ## Overview
 
-`api-rs` uses an **H2 in-memory database** initialised at startup from `schema.sql` (DDL) and `data.sql` (seed data). The schema contains two tables: `CATEGORY` and `MESSAGE`, linked by a foreign key on `category_code`.
+`api-rs` uses an **H2 in-memory database** initialised at startup from `schema.sql` (DDL) and `data.sql` (seed data). The schema contains four tables: `USERS` and `ROLES` (user identity and authorisation), plus `CATEGORY` and `MESSAGE` (content), linked by foreign keys.
 
 ---
 
@@ -23,6 +23,21 @@ This document describes the database schema, entity relationships, and data acce
 
 **Full DDL**
 ```sql
+CREATE TABLE IF NOT EXISTS USERS (
+    login       VARCHAR(100) NOT NULL PRIMARY KEY,
+    github_id   BIGINT,
+    name        VARCHAR(255),
+    avatar_url  VARCHAR(500)
+);
+
+CREATE TABLE IF NOT EXISTS ROLES (
+    id    BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    login VARCHAR(100) NOT NULL,
+    role  VARCHAR(50)  NOT NULL,
+    CONSTRAINT fk_roles_user       FOREIGN KEY (login) REFERENCES USERS(login),
+    CONSTRAINT uq_roles_login_role UNIQUE (login, role)
+);
+
 CREATE TABLE IF NOT EXISTS CATEGORY (
     id          BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name        VARCHAR(255) NOT NULL,
@@ -42,6 +57,27 @@ CREATE TABLE IF NOT EXISTS MESSAGE (
 ---
 
 ## Entity Descriptions
+
+### USERS
+
+| Column | Type | Constraints | Description |
+|---|---|---|---|
+| `login` | `VARCHAR(100)` | PK | GitHub login name; natural primary key |
+| `github_id` | `BIGINT` | nullable | Numeric GitHub user ID |
+| `name` | `VARCHAR(255)` | nullable | Display name from GitHub profile |
+| `avatar_url` | `VARCHAR(500)` | nullable | GitHub avatar image URL |
+
+Rows are created automatically by `UserService.findOrRegister` on every user's first successful login. No manual insert is required.
+
+### ROLES
+
+| Column | Type | Constraints | Description |
+|---|---|---|---|
+| `id` | `BIGINT` | PK, AUTO_INCREMENT | Surrogate primary key |
+| `login` | `VARCHAR(100)` | NOT NULL, FK → USERS.login | GitHub login of the user who holds this role |
+| `role` | `VARCHAR(50)` | NOT NULL | Spring Security role string (`ROLE_READ`, `ROLE_EDIT`, `ROLE_DEL`) |
+
+The `(login, role)` pair is unique. Every newly registered user automatically receives a `ROLE_READ` row. Additional roles must be inserted manually.
 
 ### CATEGORY
 
@@ -68,11 +104,14 @@ CREATE TABLE IF NOT EXISTS MESSAGE (
 ## Entity Relationship
 
 ```
+USERS (1) ──────── (many) ROLES
+  login (PK)               login (FK)
+
 CATEGORY (1) ──────── (many) MESSAGE
    code (PK/UK)              category_code (FK)
 ```
 
-One category can have many messages. A message belongs to exactly one category.
+One user can hold many roles (one row per role). One category can have many messages. A message belongs to exactly one category. The two groups (`USERS`/`ROLES` and `CATEGORY`/`MESSAGE`) are independent — there is no FK between them.
 
 ---
 

@@ -167,7 +167,7 @@ This moves the change folder from `openspec/changes/` to `openspec/changes/archi
 | Change | Status | Description |
 |---|---|---|
 | `add-crud-categories-messages-api` | Implemented | CRUD endpoints for categories and messages |
-| `add-crud-authorization` | Proposed | Three-role authorization (ROLE_READ/EDIT/DEL) |
+| `add-crud-authorization` | Implemented | Three-role authorization (ROLE_READ/EDIT/DEL) backed by DB-persisted users and roles |
 
 ## Archived Changes
 

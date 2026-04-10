@@ -1,6 +1,6 @@
 # api-rs — Security
 
-`api-rs` acts as an OAuth2 Resource Server. Every request (except `/oauth2/token` and `/h2-console`) must carry a valid GitHub Bearer token. Roles are assigned at introspection time based on configurable allow-lists.
+`api-rs` acts as an OAuth2 Resource Server. Every request (except `POST /oauth2/token` and `/h2-console`) must carry a valid GitHub Bearer token. On each request the token is validated with GitHub, the authenticated user is registered or looked up in the database, and their roles are loaded from the `ROLES` table.
 
 ---
 
@@ -8,7 +8,7 @@
 
 | Class | Responsibility |
 |---|---|
-| `GitHubOpaqueTokenIntrospector` | Validates GitHub tokens via `GET https://api.github.com/user`; assigns `ROLE_READ`, `ROLE_EDIT`, `ROLE_DEL` |
+| `GitHubOpaqueTokenIntrospector` | Validates GitHub tokens via `GET https://api.github.com/user`; delegates to `UserService` for user registration and role loading |
 | `ResourceServerConfig` | Declares the `SecurityFilterChain`: per-method authorization rules, CORS, session policy |
 
 ---
@@ -19,8 +19,10 @@
 
 1. Calls `GET https://api.github.com/user` with `Authorization: Bearer <token>`.
 2. A `200` response with a `login` field confirms the token is valid.
-3. The `login` is compared (case-insensitively) against three allow-lists.
-4. Matching allow-lists add the corresponding role authority.
+3. The `login` is passed to `UserService.findOrRegister`:
+   - **First login** — inserts a new row in `USERS` and grants `ROLE_READ` in `ROLES`.
+   - **Returning user** — loads all role rows from `ROLES` for that login.
+4. Returns a `GitHubPrincipal` with the user's login and granted authorities.
 
 **Token introspection flow**
 ```
@@ -37,10 +39,10 @@ Authorization: Bearer gho_xxxxx
 { "login": "octocat", "id": 1, "name": "The Octocat" }
          │
          ▼
-Check allow-lists:
-  readers.contains("octocat")  → add ROLE_READ
-  editors.contains("octocat")  → add ROLE_EDIT
-  deleters.contains("octocat") → add ROLE_DEL
+UserService.findOrRegister("octocat", 1, "The Octocat", "https://...")
+         │
+         ├─ First login? YES → INSERT USERS + INSERT ROLES(ROLE_READ)
+         │               NO  → SELECT role FROM ROLES WHERE login = 'octocat'
          │
          ▼
 GitHubPrincipal { name: "octocat", authorities: [ROLE_READ, ROLE_EDIT, ROLE_DEL] }
@@ -59,35 +61,42 @@ Declared in `ResourceServerConfig.securityFilterChain()`:
 | PUT | `/categories/**`, `/messages/**` | `ROLE_EDIT` |
 | DELETE | `/categories/**`, `/messages/**` | `ROLE_DEL` |
 | POST | `/oauth2/token` | none (permit-all) |
-| any | `/h2-console/**` | none (permit-all) |
+| any | `/h2-console` | none (permit-all) |
 | any | anything else | authenticated |
 
 ---
 
-## Role Configuration
+## Role Management
 
-Roles are controlled by three environment variables. Each is a comma-separated list of GitHub login names (case-insensitive). Roles are **independent** — a user must appear in each list to hold multiple roles.
+Roles are stored in the `ROLES` table and loaded from the database on every introspection. There are no environment variables for roles.
 
-| Environment Variable | Role | Methods |
+| Role | Granted by | HTTP Methods |
 |---|---|---|
-| `READERS_GITHUB_LOGINS` | `ROLE_READ` | GET |
-| `EDITORS_GITHUB_LOGINS` | `ROLE_EDIT` | POST, PUT |
-| `DELETERS_GITHUB_LOGINS` | `ROLE_DEL` | DELETE |
+| `ROLE_READ` | Automatically on first login | GET |
+| `ROLE_EDIT` | Manual DB insert | POST, PUT |
+| `ROLE_DEL` | Manual DB insert | DELETE |
 
-**Example: read-only user**
-```bash
-export READERS_GITHUB_LOGINS=alice,bob
-export EDITORS_GITHUB_LOGINS=alice
-export DELETERS_GITHUB_LOGINS=alice
-# bob can only GET; alice can GET, POST, PUT, DELETE
+**Example: grant ROLE_EDIT and ROLE_DEL via H2 console**
+```sql
+-- http://localhost:8080/h2-console
+INSERT INTO ROLES (login, role) VALUES ('octocat', 'ROLE_EDIT');
+INSERT INTO ROLES (login, role) VALUES ('octocat', 'ROLE_DEL');
 ```
 
-**Example: warn when an allow-list is empty**
+**Example: revoke a role**
+```sql
+DELETE FROM ROLES WHERE login = 'octocat' AND role = 'ROLE_DEL';
+```
 
-On startup, if any allow-list is empty, the introspector logs a warning:
+**Example: list all users and their current roles**
+```sql
+SELECT u.login, r.role
+FROM USERS u
+LEFT JOIN ROLES r ON r.login = u.login
+ORDER BY u.login, r.role;
 ```
-WARN: READERS_GITHUB_LOGINS is empty — GET /categories and GET /messages will be denied for all users
-```
+
+> See [users.md](users.md) for full user and role management documentation.
 
 ---
 
@@ -101,7 +110,8 @@ config.setAllowedOrigins(List.of(
     "http://127.0.0.1:5500",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    "http://local.example.com:5500"
+    "http://local.example.com:5500",
+    "http://local.example.com:8080"
 ));
 config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
@@ -122,7 +132,7 @@ config.setAllowedOrigins(List.of(
 
 To add authorization to a new endpoint, declare a rule in `ResourceServerConfig.securityFilterChain()`:
 
-**Example: add a new admin endpoint requiring all three roles**
+**Example: add a new admin endpoint requiring ROLE_EDIT**
 ```java
 .authorizeHttpRequests(auth -> auth
     // existing rules …

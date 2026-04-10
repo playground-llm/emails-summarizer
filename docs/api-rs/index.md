@@ -12,6 +12,7 @@
 | [messages.md](messages.md) | Message CRUD endpoints and service logic |
 | [security.md](security.md) | Token introspection and role-based authorization |
 | [oauth.md](oauth.md) | OAuth2 token exchange proxy (`POST /oauth2/token`) |
+| [users.md](users.md) | User registration and DB-backed role management |
 
 ---
 
@@ -45,9 +46,15 @@ api-rs/src/main/java/com/emailssummarizer/apirs/
 │   └── MessageService.java
 ├── oauth/
 │   └── OAuthController.java      ← POST /oauth2/token proxy
-└── security/
-    ├── GitHubOpaqueTokenIntrospector.java  ← Token validation + role assignment
-    └── ResourceServerConfig.java           ← SecurityFilterChain, CORS, auth rules
+├── security/
+│   ├── GitHubOpaqueTokenIntrospector.java  ← Token validation + role assignment
+│   └── ResourceServerConfig.java           ← SecurityFilterChain, CORS, auth rules
+└── user/                         ← User registration and role management
+    ├── AppUser.java              ← JPA entity (USERS table)
+    ├── AppUserRepository.java    ← Spring Data JPA repository
+    ├── UserRole.java             ← JPA entity (ROLES table)
+    ├── UserRoleRepository.java   ← Spring Data JPA repository
+    └── UserService.java          ← find-or-register logic, role retrieval
 ```
 
 ---
@@ -58,9 +65,6 @@ api-rs/src/main/java/com/emailssummarizer/apirs/
 ```bash
 export GITHUB_CLIENT_ID=<your-client-id>
 export GITHUB_CLIENT_SECRET=<your-client-secret>
-export READERS_GITHUB_LOGINS=your-github-login
-export EDITORS_GITHUB_LOGINS=your-github-login
-export DELETERS_GITHUB_LOGINS=your-github-login
 ```
 
 **Step 2 — Start the server**
@@ -102,6 +106,5 @@ curl http://localhost:8080/categories \
 |---|---|---|
 | `spring.security.oauth2.resourceserver.opaquetoken.client-id` | `GITHUB_CLIENT_ID` | GitHub OAuth App client ID |
 | `spring.security.oauth2.resourceserver.opaquetoken.client-secret` | `GITHUB_CLIENT_SECRET` | GitHub OAuth App client secret |
-| `app.readers` | `READERS_GITHUB_LOGINS` | Comma-separated logins with ROLE_READ |
-| `app.editors` | `EDITORS_GITHUB_LOGINS` | Comma-separated logins with ROLE_EDIT |
-| `app.deleters` | `DELETERS_GITHUB_LOGINS` | Comma-separated logins with ROLE_DEL |
+
+> Roles are no longer configured through environment variables. They are stored in the `ROLES` table and assigned automatically on first login (`ROLE_READ`) or via direct DB inserts. See [users.md](users.md).

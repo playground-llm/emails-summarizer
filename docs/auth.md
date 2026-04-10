@@ -74,24 +74,32 @@ Response:
 
 ## Authorization Roles
 
-`api-rs` assigns roles at token introspection time. Roles are independent — a user must appear in each allow-list separately to hold multiple roles.
+`api-rs` assigns roles at token introspection time from the `ROLES` table in the database. Roles are independent — a user may hold any combination of the three roles.
 
-| Role | HTTP Methods | Environment Variable |
+| Role | HTTP Methods | How Granted |
 |---|---|---|
-| `ROLE_READ` | GET | `READERS_GITHUB_LOGINS` |
-| `ROLE_EDIT` | POST, PUT | `EDITORS_GITHUB_LOGINS` |
-| `ROLE_DEL` | DELETE | `DELETERS_GITHUB_LOGINS` |
+| `ROLE_READ` | GET | Automatically on first login |
+| `ROLE_EDIT` | POST, PUT | Manual DB grant (see below) |
+| `ROLE_DEL` | DELETE | Manual DB grant (see below) |
 
-Each variable is a comma-separated list of GitHub login names (case-insensitive).
+Every GitHub user who authenticates for the first time is automatically registered in the `USERS` table and assigned `ROLE_READ`. Additional roles (`ROLE_EDIT`, `ROLE_DEL`) must be inserted directly into the `ROLES` table via the H2 console or another SQL client.
 
-**Example: grant a user all three roles**
-```bash
-export READERS_GITHUB_LOGINS=octocat,alice
-export EDITORS_GITHUB_LOGINS=octocat
-export DELETERS_GITHUB_LOGINS=octocat
+**Example: grant ROLE_EDIT and ROLE_DEL to a user via the H2 console**
+```sql
+-- http://localhost:8080/h2-console
+INSERT INTO ROLES (login, role) VALUES ('octocat', 'ROLE_EDIT');
+INSERT INTO ROLES (login, role) VALUES ('octocat', 'ROLE_DEL');
 ```
 
-In this example, `octocat` has all three roles; `alice` can only read.
+In this example, `octocat` receives all three roles; a user who has only logged in once holds only `ROLE_READ`.
+
+**Example: list all users and their current roles**
+```sql
+SELECT u.login, r.role
+FROM USERS u
+LEFT JOIN ROLES r ON r.login = u.login
+ORDER BY u.login, r.role;
+```
 
 ---
 
