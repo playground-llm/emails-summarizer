@@ -29,10 +29,11 @@ emails-summarizer/
 │   └── src/main/
 │       ├── java/com/emailssummarizer/apirs/
 │       │   ├── ApiRsApplication.java
-│       │   ├── category/        # Category JPA entity, repo, controller, request DTO
-│       │   ├── message/         # Message JPA entity, repo, controller, request DTO
+│       │   ├── category/        # Category JPA entity, repo, service, controller, request DTO
+│       │   ├── message/         # Message JPA entity, repo, service, controller, request DTO
 │       │   ├── oauth/           # OAuthController — GitHub token exchange proxy
-│       │   └── security/        # ResourceServerConfig, GitHubOpaqueTokenIntrospector
+│       │   ├── security/        # ResourceServerConfig, GitHubOpaqueTokenIntrospector
+│       │   └── user/            # AppUser, UserRole entities; UserService (find-or-register)
 │       └── resources/
 │           ├── application.yml  # H2 datasource, JPA, OAuth2 config, role allow-lists
 │           ├── schema.sql       # CATEGORY and MESSAGE DDL
@@ -106,15 +107,12 @@ Common commands:
   - `PUT /messages/{id}` — update title/body/categoryCode. Requires `ROLE_EDIT`. Returns 404 if not found, 409 if categoryCode unknown.
   - `DELETE /messages/{id}` — delete a message. Requires `ROLE_DEL`. Returns 404 if not found.
   - `POST /oauth2/token` — token exchange proxy. Accepts `{ code, redirectUri }`, calls GitHub's token endpoint server-side (keeping `client_secret` off the browser), returns `{ accessToken }`. Permitted without authentication.
-- **Security**: Resource Server mode. GitHub opaque tokens validated via `GET https://api.github.com/user`. Three independent roles assigned at introspection time based on allow-lists. CORS configured to allow the `ui` origin (e.g. `http://localhost:5500`).
+- **Security**: Resource Server mode. GitHub opaque tokens validated via `GET https://api.github.com/user`. On first login the authenticated GitHub user is registered in the `USERS` table and granted `ROLE_READ`. On subsequent logins roles are loaded from the `ROLES` table. Three independent roles enforced per HTTP method: `ROLE_READ` (GET), `ROLE_EDIT` (POST/PUT), `ROLE_DEL` (DELETE). CORS configured to allow the `ui` origin (e.g. `http://localhost:5500`).
 - **Required environment variables**:
 
   ```bash
   export GITHUB_CLIENT_ID=<your-github-oauth-app-client-id>
   export GITHUB_CLIENT_SECRET=<your-github-oauth-app-client-secret>
-  export READERS_GITHUB_LOGINS=<comma-separated-logins>   # grants ROLE_READ (GET)
-  export EDITORS_GITHUB_LOGINS=<comma-separated-logins>   # grants ROLE_EDIT (POST, PUT)
-  export DELETERS_GITHUB_LOGINS=<comma-separated-logins>  # grants ROLE_DEL (DELETE)
   ```
 
 - **GitHub OAuth App**: Register at <https://github.com/settings/developers>. Set "Authorization callback URL" to the `ui` origin (e.g. `http://localhost:5500/index.html`).
@@ -123,6 +121,9 @@ Common commands:
 ## Data model
 
 ```sql
+USERS    (login VARCHAR PK, github_id BIGINT, name VARCHAR, avatar_url VARCHAR)
+ROLES    (id BIGINT PK AUTO_INCREMENT, login VARCHAR FK → USERS.login,
+          role VARCHAR, UNIQUE(login, role))
 CATEGORY (id BIGINT PK, name VARCHAR, code VARCHAR UNIQUE, description VARCHAR)
 MESSAGE  (id UUID PK DEFAULT RANDOM_UUID(), title VARCHAR, body CLOB,
           category_code VARCHAR FK → CATEGORY.code)
@@ -130,15 +131,14 @@ MESSAGE  (id UUID PK DEFAULT RANDOM_UUID(), title VARCHAR, body CLOB,
 
 Sample seed categories: INBOX, WORK, PERSONAL (see `api-rs/src/main/resources/data.sql`).
 
+**Role model**: Every GitHub user who logs in is auto-registered in `USERS` with a default `ROLE_READ` row in `ROLES`. `ROLE_EDIT` and `ROLE_DEL` must be granted manually (via H2 console in dev) until a role-management API is available.
+
 ## Running locally
 
 ```bash
 # Terminal 1 — start api-rs
 export GITHUB_CLIENT_ID=<id>
 export GITHUB_CLIENT_SECRET=<secret>
-export READERS_GITHUB_LOGINS=<your-login>
-export EDITORS_GITHUB_LOGINS=<your-login>
-export DELETERS_GITHUB_LOGINS=<your-login>
 ./gradlew :api-rs:bootRun
 
 # Terminal 2 — serve ui
@@ -146,6 +146,9 @@ cd ui && python3 -m http.server 5500
 # or: npx serve . -p 3000
 
 # Then open http://localhost:5500/index.html
+# On first login, your GitHub user is auto-registered with ROLE_READ.
+# To grant ROLE_EDIT or ROLE_DEL, insert a row via the H2 console:
+#   http://localhost:8080/h2-console  (JDBC URL: jdbc:h2:mem:emailsdb)
 ```
 
 ## Development workflow (OpenSpec)
@@ -162,15 +165,15 @@ Capability specs are promoted to `openspec/specs/` after archiving.
 
 Project-level context (tech stack, conventions) is maintained in `openspec/config.yaml` under the `context:` key.
 
-Completed changes (both archived):
+Completed changes (all archived):
 
 - `2026-04-07-add-categories-messages-api` — Spring Boot API with Category/Message endpoints and GitHub OAuth2 security.
 - `2026-04-07-add-ui-main-page` — Vue 3 single-page UI with OAuth2 login flow, category sidebar, and message panel.
+- `2026-04-10-add-crud-categories-messages-api` — CRUD endpoints for categories and messages (POST/PUT/DELETE).
+- `2026-04-10-add-crud-authorization` — Three-role authorization (`ROLE_READ`/`ROLE_EDIT`/`ROLE_DEL`) enforced per HTTP method; roles stored in database.
+- `2026-04-10-add-user-registration` — Auto-registration of GitHub users in `USERS` table on first login with default `ROLE_READ`.
 
-Active changes (proposed, partially or fully implemented):
-
-- `add-crud-categories-messages-api` — CRUD endpoints for categories and messages (implemented).
-- `add-crud-authorization` — Three-role authorization (`ROLE_READ`/`ROLE_EDIT`/`ROLE_DEL`) backed by separate GitHub login allow-lists (proposed).
+Active changes: none.
 
 ## Key conventions
 
@@ -181,4 +184,4 @@ Active changes (proposed, partially or fully implemented):
 - The `ui` must be served over HTTP (not opened as `file://`) — OAuth2 redirect URIs require a real origin.
 - Never embed `GITHUB_CLIENT_SECRET` in frontend code or commit it to the repo.
 - **Code layout skills**: always read the `api-rs-code-layout` skill before writing backend code, and the `ui-code-layout` skill before writing frontend code.
-- Authorization roles are independent — a user must appear in each allow-list (`READERS_`, `EDITORS_`, `DELETERS_GITHUB_LOGINS`) separately to hold multiple roles.
+- Authorization roles are independent — a user can hold any combination of `ROLE_READ`, `ROLE_EDIT`, and `ROLE_DEL`; each is a separate row in `ROLES`.

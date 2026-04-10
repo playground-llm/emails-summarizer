@@ -63,20 +63,32 @@ The system SHALL restrict `DELETE /categories/{code}` and `DELETE /messages/{id}
 
 ---
 
-### Requirement: Role allow-lists configured independently via environment variables
-The system SHALL assign `ROLE_READ`, `ROLE_EDIT`, and `ROLE_DEL` based on three separate comma-separated env vars: `READERS_GITHUB_LOGINS`, `EDITORS_GITHUB_LOGINS`, and `DELETERS_GITHUB_LOGINS` respectively. A GitHub login MAY appear in multiple lists to hold multiple roles. Matching SHALL be case-insensitive. An absent or empty env var means no user holds that role.
+### Requirement: Roles stored in the database and assigned at introspection time
+The system SHALL assign `ROLE_READ`, `ROLE_EDIT`, and `ROLE_DEL` to an authenticated principal based on rows in the `ROLES` table. The introspector SHALL call `UserService.findOrRegister` to retrieve role strings after resolving the GitHub login. A user MAY hold multiple roles as separate rows. Role lookup SHALL use the lowercase form of the GitHub login. An absent login results in automatic registration with `ROLE_READ` only.
+
+#### Scenario: New user gets ROLE_READ on first login
+- **GIVEN** a GitHub user `alice` has never authenticated before
+- **WHEN** `alice` presents a valid token to any endpoint
+- **THEN** the system SHALL create a row in `USERS` and a row in `ROLES(login='alice', role='ROLE_READ')`, and the principal SHALL carry `ROLE_READ`
+
+#### Scenario: Returning user gets their stored roles
+- **GIVEN** `alice` already has rows `ROLE_READ` and `ROLE_EDIT` in the `ROLES` table
+- **WHEN** `alice` presents a valid token
+- **THEN** the principal SHALL carry `ROLE_READ` and `ROLE_EDIT` without inserting new rows
 
 #### Scenario: User with ROLE_READ only cannot write
-- **WHEN** `READERS_GITHUB_LOGINS=alice` and `EDITORS_GITHUB_LOGINS=` are set, and `alice` calls `POST /categories`
+- **GIVEN** `alice` has only `ROLE_READ` in the `ROLES` table
+- **WHEN** `alice` calls `POST /categories`
 - **THEN** the API SHALL respond with `403 Forbidden`
 
 #### Scenario: User holding multiple roles
-- **WHEN** `READERS_GITHUB_LOGINS=alice` and `EDITORS_GITHUB_LOGINS=alice` and `DELETERS_GITHUB_LOGINS=alice` are set
-- **THEN** `alice` SHALL be granted `ROLE_READ`, `ROLE_EDIT`, and `ROLE_DEL`
+- **GIVEN** `alice` has `ROLE_READ`, `ROLE_EDIT`, and `ROLE_DEL` in the `ROLES` table
+- **THEN** `alice` SHALL be granted all three authorities and may call GET, POST/PUT, and DELETE endpoints
 
-#### Scenario: Case-insensitive match for readers
-- **WHEN** `READERS_GITHUB_LOGINS=Alice` is configured and the introspected login is `alice`
-- **THEN** the API SHALL recognise the user as holding `ROLE_READ`
+#### Scenario: Case-insensitive login matching
+- **GIVEN** `USERS` contains a row with login `alice`
+- **WHEN** the introspected GitHub login value is `Alice`
+- **THEN** the system SHALL normalise to `alice` and match the existing row
 
 #### Scenario: All lists empty blocks all data endpoints
 - **WHEN** all three env vars are unset and any authenticated user calls any data endpoint
